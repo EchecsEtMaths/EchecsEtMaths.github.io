@@ -5,10 +5,32 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lifeboard</title>
+    <link rel="icon" href="./favicon.png" type="image/png">
+
 </head>
 
 <body>
     <h1>Hello World !</h1>
+    <button id="load">Charger</button>
+
+    <script type="module">
+        import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
+
+        const supabaseUrl = 'https://bfrpawpfgflfslysvtjz.supabase.co'
+        const supabaseKey = 'sb_publishable_ZkP0cSUI7cdyb898jxCW_w_n3vBa59s'
+
+        const supabase = createClient(supabaseUrl, supabaseKey);
+
+        document.getElementById('load').onclick = async () => {
+            const { data, error } = await supabase
+                .from('User')
+                .select('*')
+
+            console.log('data:', data)
+            console.log('error:', error)
+        }
+    </script>
+
 </body>
 
 </html>
