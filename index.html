@@ -16,9 +16,20 @@
 
 <body>
     <h1>Hello World !</h1>
+    <h4>Menu principal</h4>
     <button>
         <a href="/ProgressionJournee.html">Progression de la journée</a>
     </button>
+
+    <br>
+    <hr>
+    <br>
+
+    <input type="text" placeholder="NOM" id="inputNom" />
+    <input type="text" placeholder="Prénom" id="inputPrenom" />
+    <button id="create">Ajouter l'utilisateur</button>
+    <br>
+    <br>
     <button id="load">Charger les users de la base de données</button>
     <p id="loading">Chargement...</p>
     <div>
@@ -32,7 +43,22 @@
 
         const supabase = createClient(supabaseUrl, supabaseKey);
 
-        document.getElementById('load').onclick = async () => {
+        async function createUser() {
+            document.getElementById("loading").style.display = "block";
+
+            document.getElementById("users").innerHTML = "";
+
+            await supabase
+                .from('User')
+                .insert({
+                    nom: document.getElementById("inputNom").value,
+                    prenom: document.getElementById("inputPrenom").value
+                });
+
+            document.getElementById("loading").style.display = "none";
+        }
+
+        async function getUsers() {
             document.getElementById("loading").style.display = "block";
 
             document.getElementById("users").innerHTML = "";
@@ -41,14 +67,20 @@
                 .from('User')
                 .select('*');
 
-            console.log('data:', data);
-            console.log('error:', error);
-
             data.forEach(user => {
                 document.getElementById("users").innerHTML += "<li>" + user.prenom + " " + user.nom + "</li>";
             });
 
             document.getElementById("loading").style.display = "none";
+        }
+
+        document.getElementById('load').onclick = async () => {
+            await getUsers();
+        }
+
+        document.getElementById('create').onclick = async () => {
+            await createUser();
+            await getUsers();
         }
     </script>
 
