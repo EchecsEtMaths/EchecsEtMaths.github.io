@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lifeboard</title>
+    <link rel="icon" href="./favicon.png" type="image/png">
+
+    <style>
+        #loading {
+            display: none;
+        }
+
+        body {
+            background-color: #222;
+            color: #EEE;
+        }
+    </style>
+</head>
+
+<body>
+    <nav>
+        <button>
+            <a href="../index.html">Retour</a>
+        </button>
+    </nav>
+
+    <br>
+    <br>
+
+    <input type="text" placeholder="NOM" id="inputNom" />
+    <input type="text" placeholder="Prénom" id="inputPrenom" />
+    <button id="create">Ajouter l'utilisateur</button>
+
+    <br>
+    <br>
+
+    <button id="load">Charger les users de la base de données</button>
+
+    <p id="loading">Chargement...</p>
+
+    <div>
+        <ul id="users"></ul>
+    </div>
+
+    <script type="module">
+        import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
+
+        const supabaseUrl = 'https://bfrpawpfgflfslysvtjz.supabase.co'
+        const supabaseKey = 'sb_publishable_ZkP0cSUI7cdyb898jxCW_w_n3vBa59s'
+
+        const supabase = createClient(supabaseUrl, supabaseKey);
+
+        async function createUser() {
+            document.getElementById("loading").style.display = "block";
+
+            document.getElementById("users").innerHTML = "";
+
+            await supabase
+                .from('User')
+                .insert({
+                    nom: document.getElementById("inputNom").value,
+                    prenom: document.getElementById("inputPrenom").value
+                });
+
+            document.getElementById("loading").style.display = "none";
+        }
+
+        async function getUsers() {
+            document.getElementById("loading").style.display = "block";
+
+            document.getElementById("users").innerHTML = "";
+
+            const { data, error } = await supabase
+                .from('User')
+                .select('*');
+
+            data.forEach(user => {
+                document.getElementById("users").innerHTML += "<li>" + user.prenom + " " + user.nom + "</li>";
+            });
+
+            document.getElementById("loading").style.display = "none";
+        }
+
+        document.getElementById('load').onclick = async () => {
+            await getUsers();
+        }
+
+        document.getElementById('create').onclick = async () => {
+            await createUser();
+            await getUsers();
+        }
+    </script>
+</body>
+
+</html>
