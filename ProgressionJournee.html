@@ -21,6 +21,9 @@
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       background: linear-gradient(135deg, #1a1a2e, #16213e);
       color: #e4e4e7;
+    }
+
+    .body-container {
       min-height: 100vh;
       display: flex;
       justify-content: center;
@@ -599,77 +602,84 @@
 </head>
 
 <body>
-  <div class="container">
-    <h1>📊 Progression Travail</h1>
+  <button>
+    <a href="./index.html">Retour</a>
+  </button>
+  <div class="body-container">
 
-    <!-- Section des horaires personnalisés -->
-    <div class="schedule-settings">
-      <div class="schedule-title">⚙️ Mes Horaires</div>
-      <div class="schedule-inputs">
-        <div class="input-group">
-          <label class="input-label" for="startTime">Heure d'embauche</label>
-          <input type="time" id="startTime" class="time-input" value="07:30">
-        </div>
-        <div class="input-group">
-          <label class="input-label" for="endTime">Heure de débauche</label>
-          <input type="time" id="endTime" class="time-input" value="16:00">
-        </div>
-      </div>
-    </div>
 
-    <div class="progress-grid">
-      <!-- Progression de la semaine -->
-      <div class="progress-container">
-        <div class="progress-title week">📅 Semaine</div>
-        <div class="progress-label">
-          <span>Avancement</span>
-          <span id="weekPercentage">0%</span>
-        </div>
-        <div class="progress-bar">
-          <div class="progress-fill week" id="weekProgressFill"></div>
-        </div>
-        <div class="progress-details" id="weekDetails">
-          Calcul en cours...
+    <div class="container">
+      <h1>📊 Progression Travail</h1>
+
+      <!-- Section des horaires personnalisés -->
+      <div class="schedule-settings">
+        <div class="schedule-title">⚙️ Mes Horaires</div>
+        <div class="schedule-inputs">
+          <div class="input-group">
+            <label class="input-label" for="startTime">Heure d'embauche</label>
+            <input type="time" id="startTime" class="time-input" value="07:30">
+          </div>
+          <div class="input-group">
+            <label class="input-label" for="endTime">Heure de débauche</label>
+            <input type="time" id="endTime" class="time-input" value="16:00">
+          </div>
         </div>
       </div>
 
-      <!-- Progression de la journée -->
-      <div class="progress-container">
-        <div class="progress-title day">🌅 Journée</div>
-        <div class="progress-label">
-          <span>Avancement</span>
-          <span id="dayPercentage">0%</span>
+      <div class="progress-grid">
+        <!-- Progression de la semaine -->
+        <div class="progress-container">
+          <div class="progress-title week">📅 Semaine</div>
+          <div class="progress-label">
+            <span>Avancement</span>
+            <span id="weekPercentage">0%</span>
+          </div>
+          <div class="progress-bar">
+            <div class="progress-fill week" id="weekProgressFill"></div>
+          </div>
+          <div class="progress-details" id="weekDetails">
+            Calcul en cours...
+          </div>
         </div>
-        <div class="progress-bar">
-          <div class="progress-fill day" id="dayProgressFill"></div>
-        </div>
-        <div class="progress-details" id="dayDetails">
-          Calcul en cours...
-        </div>
-      </div>
-    </div>
 
-    <div class="info-grid">
-      <div class="info-card">
-        <div class="info-title">Jour Actuel</div>
-        <div class="info-value" id="currentDay">-</div>
+        <!-- Progression de la journée -->
+        <div class="progress-container">
+          <div class="progress-title day">🌅 Journée</div>
+          <div class="progress-label">
+            <span>Avancement</span>
+            <span id="dayPercentage">0%</span>
+          </div>
+          <div class="progress-bar">
+            <div class="progress-fill day" id="dayProgressFill"></div>
+          </div>
+          <div class="progress-details" id="dayDetails">
+            Calcul en cours...
+          </div>
+        </div>
       </div>
-      <div class="info-card">
-        <div class="info-title">Heure Actuelle</div>
-        <div class="info-value" id="currentTime">-</div>
-      </div>
-      <div class="info-card">
-        <div class="info-title">Heures Travaillées</div>
-        <div class="info-value" id="workedHours">0h</div>
-      </div>
-      <div class="info-card">
-        <div class="info-title">Heures Restantes</div>
-        <div class="info-value" id="remainingHours">0h</div>
-      </div>
-    </div>
 
-    <div class="time-remaining" id="timeRemaining">
-      Calcul en cours...
+      <div class="info-grid">
+        <div class="info-card">
+          <div class="info-title">Jour Actuel</div>
+          <div class="info-value" id="currentDay">-</div>
+        </div>
+        <div class="info-card">
+          <div class="info-title">Heure Actuelle</div>
+          <div class="info-value" id="currentTime">-</div>
+        </div>
+        <div class="info-card">
+          <div class="info-title">Heures Travaillées</div>
+          <div class="info-value" id="workedHours">0h</div>
+        </div>
+        <div class="info-card">
+          <div class="info-title">Heures Restantes</div>
+          <div class="info-value" id="remainingHours">0h</div>
+        </div>
+      </div>
+
+      <div class="time-remaining" id="timeRemaining">
+        Calcul en cours...
+      </div>
     </div>
   </div>
 </body>

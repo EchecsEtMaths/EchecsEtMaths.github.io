@@ -7,12 +7,23 @@
     <title>Lifeboard</title>
     <link rel="icon" href="./favicon.png" type="image/png">
 
+    <style>
+        #loading {
+            display: none;
+        }
+    </style>
 </head>
 
 <body>
     <h1>Hello World !</h1>
-    <button id="load">Charger</button>
-
+    <button>
+        <a href="/ProgressionJournee.html">Progression de la journée</a>
+    </button>
+    <button id="load">Charger les users de la base de données</button>
+    <p id="loading">Chargement...</p>
+    <div>
+        <ul id="users"></ul>
+    </div>
     <script type="module">
         import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 
@@ -22,12 +33,22 @@
         const supabase = createClient(supabaseUrl, supabaseKey);
 
         document.getElementById('load').onclick = async () => {
+            document.getElementById("loading").style.display = "block";
+
+            document.getElementById("users").innerHTML = "";
+
             const { data, error } = await supabase
                 .from('User')
-                .select('*')
+                .select('*');
 
-            console.log('data:', data)
-            console.log('error:', error)
+            console.log('data:', data);
+            console.log('error:', error);
+
+            data.forEach(user => {
+                document.getElementById("users").innerHTML += "<li>" + user.prenom + " " + user.nom + "</li>";
+            });
+
+            document.getElementById("loading").style.display = "none";
         }
     </script>
 
