@@ -6,27 +6,61 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lifeboard</title>
     <link rel="icon" href="./favicon.png" type="image/png">
-
+    <link rel="stylesheet" href="index.css" type="text/css">
     <style>
         #loading {
             display: none;
-        }
-
-        body {
-            background-color: #222;
-            color: #EEE;
         }
     </style>
 </head>
 
 <body>
     <h4>Menu principal</h4>
+    <p id="salutations"></p>
     <button>
         <a href="/ProgressionJournee/ProgressionJournee.html">Progression de la journée</a>
     </button>
-    <button>
+    <button id="button-admin">
         <a href="/Admin/admin.html">Admin</a>
     </button>
+    <button id="logout">Deconnexion</button>
 </body>
+<script src="../const.js"></script>
+<script type="module">
+    import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+
+    const supabase = createClient(supabaseUrl, supabaseKey);
+
+    async function updateStatus() {
+        const {
+            data: { session },
+        } = await supabase.auth.getSession();
+
+        if (!session) {
+            window.location.replace("/Auth/login.html");
+        }
+
+        const { data, error } = await supabase
+            .from('User')
+            .select('*')
+            .eq("id", session.user.id);
+        document.getElementById("salutations").innerHTML = "Bonjour " + data[0].prenom;
+
+        if (data[0].role === 'ADMIN') {
+            document.getElementById("button-admin").style.display = "inline";
+        }
+    }
+
+    supabase.auth.onAuthStateChange((event, session) => {
+        updateStatus();
+    });
+
+
+    document.getElementById("logout").addEventListener("click", logout);
+
+    async function logout() {
+        await supabase.auth.signOut();
+    }
+</script>
 
 </html>
