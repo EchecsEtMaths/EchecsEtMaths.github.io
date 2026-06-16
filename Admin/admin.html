@@ -13,29 +13,25 @@
 
 <body>
     <nav>
-        <button>
-            <a href="../index.html">Retour</a>
-        </button>
+        <a href="../index.html">Retour</a>
     </nav>
+    <main>
+        <input type="text" placeholder="NOM" id="inputNom" />
+        <input type="text" placeholder="Prénom" id="inputPrenom" />
+        <input type="text" placeholder="Rôle" id="inputRole" />
+        <button id="create">Ajouter l'utilisateur</button>
 
-    <br>
-    <br>
+        <br>
+        <br>
 
-    <input type="text" placeholder="NOM" id="inputNom" />
-    <input type="text" placeholder="Prénom" id="inputPrenom" />
-    <input type="text" placeholder="Rôle" id="inputRole" />
-    <button id="create">Ajouter l'utilisateur</button>
+        <button id="load">Recharger les users</button>
 
-    <br>
-    <br>
+        <p id="loading">Chargement...</p>
 
-    <button id="load">Recharger les users</button>
-
-    <p id="loading">Chargement...</p>
-
-    <div>
-        <ul id="users"></ul>
-    </div>
+        <div>
+            <ul id="users"></ul>
+        </div>
+    </main>
     <script src="../const.js"></script>
     <script type="module" src="admin.js"></script>
 </body>

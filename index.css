@@ -1,11 +1,58 @@
 :root {
-    --background-color: #222;
-    --text-color: #EEE;
+    --primary-color: #298efa;
+    --background-color: #0a0f17;
+    --background-highlight-color: #111b32;
+    --border-color: #1c212a;
+    --text-color: #ececed;
+    font-family: 'Geist', sans-serif;
 }
 
 body {
     background-color: var(--background-color);
     color: var(--text-color);
+    display: flex;
+    margin: 0
+}
+
+nav {
+    padding: 0 25px 0 25px;
+    border-right: solid 2px var(--border-color);
+    height: 100vh;
+}
+
+a {
+    padding: 15px 10px 15px 10px;
+    cursor: pointer;
+}
+
+
+a:hover {
+    background-color: var(--background-highlight-color);
+    color: var(--primary-color);
+}
+
+a {
+    background-color: transparent;
+    border: none;
+    text-decoration: none;
+    text-align: left;
+    color: var(--text-color);
+    width: 100ù;
+}
+
+#menu {
+    margin-top: 50px;
+    display: flex;
+    flex-direction: column;
+}
+
+#menu-bottom {
+    position: absolute;
+    bottom: 0;
+}
+
+main {
+    padding: 25px;
 }
 
 #button-admin {
