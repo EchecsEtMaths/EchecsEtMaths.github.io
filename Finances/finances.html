@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lifeboard - Finances</title>
+    <link rel="icon" href="../favicon.png" type="image/png">
+
+    <link rel="stylesheet" href="../index.css" type="text/css">
+    <link rel="stylesheet" href="finances.css" type="text/css">
+
+</head>
+
+<body>
+    <nav>
+        <h1>Lifeboard</h1>
+        <div id="menu">
+            <a href="../ProgressionJournee/ProgressionJournee.html">⏱️ Progression de la journée</a>
+            <a href="../Admin/admin.html" id="button-admin">🔒 Admin</a>
+            <a href="../Finances/finances.html" class="selected-onglet">💰 Finances</a>
+        </div>
+        <div id="menu-bottom">
+            <button id="logout">Deconnexion</button>
+        </div>
+    </nav>
+
+    <main>
+        <h2>Finances</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th scope="col">Date</th>
+                    <th scope="col">Description</th>
+                    <th scope="col">Montant</th>
+                </tr>
+            </thead>
+            <tbody id="content-finances">
+
+            </tbody>
+        </table>
+    </main>
+
+    <script src="../const.js"></script>
+    <script type="module" src="finances.js"></script>
+</body>
+
+</html>

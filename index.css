@@ -58,3 +58,8 @@ main {
 #button-admin {
     display: none;
 }
+
+.selected-onglet {
+    background-color: var(--background-highlight-color);
+    color: var(--primary-color);
+}
