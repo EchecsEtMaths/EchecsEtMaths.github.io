@@ -13,6 +13,8 @@
 </head>
 
 <body>
+    <script src="../const.js"></script>
+    <script type="module" src="finances.js"></script>
     <nav>
         <h1>Lifeboard</h1>
         <div id="menu">
@@ -27,22 +29,31 @@
 
     <main>
         <h2>Finances</h2>
-        <table>
-            <thead>
-                <tr>
-                    <th scope="col">Date</th>
-                    <th scope="col">Description</th>
-                    <th scope="col">Montant</th>
-                </tr>
-            </thead>
-            <tbody id="content-finances">
+        <div id="contenu-comptes">
+            <table>
+                <thead>
+                    <tr>
+                        <th scope="col">Date</th>
+                        <th scope="col">Description</th>
+                        <th scope="col">Montant</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody id="content-finances">
 
-            </tbody>
-        </table>
+                </tbody>
+            </table>
+            <div>
+
+                <h4>Ajouter une transaction</h4>
+                <input type="date" id="inputDate" />
+                <input type="text" placeholder="Description de la transaction" id="inputDescription" />
+                <input type="number" min="0.00" step="0.01" id="inputMontant" value="0.00" />
+                <button id="createTransaction">Ajouter</button>
+            </div>
+        </div>
     </main>
 
-    <script src="../const.js"></script>
-    <script type="module" src="finances.js"></script>
 </body>
 
 </html>

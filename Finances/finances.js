@@ -31,6 +31,15 @@ async function logout() {
   await supabase.auth.signOut();
 }
 
+async function deleteTransactionById(transactionId) {
+  if (confirm("Vous voulez supprimer cette transaction ?") == true) {
+    await supabase.from("Transactions").delete().eq("id", transactionId);
+  }
+  await getTransactions();
+}
+
+window.deleteTransactionById = deleteTransactionById;
+
 async function getTransactions() {
   document.getElementById("content-finances").innerHTML = "";
 
@@ -56,8 +65,33 @@ async function getTransactions() {
       "<td>" +
       transac.montant +
       "</td>" +
+      "<td class='delete-transaction' id='" +
+      transac.id +
+      "' onclick='deleteTransactionById(" +
+      transac.id +
+      ")'>❌</td>" +
       "</tr>";
   });
 }
 
 getTransactions();
+
+document.getElementById("inputDate").valueAsDate = new Date();
+
+async function addTransaction() {
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
+
+  await supabase.from("Transactions").insert({
+    date_transac: document.getElementById("inputDate").value,
+    montant: document.getElementById("inputMontant").value,
+    user: session.user.id,
+    description: document.getElementById("inputDescription").value,
+  });
+}
+
+document.getElementById("createTransaction").onclick = async () => {
+  await addTransaction();
+  await getTransactions();
+};

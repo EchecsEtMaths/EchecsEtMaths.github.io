@@ -9,6 +9,8 @@ async function deleteUserById(userId) {
   await getUsers();
 }
 
+window.deleteUserById = deleteUserById;
+
 async function createUser() {
   document.getElementById("loading").style.display = "block";
 
@@ -40,10 +42,9 @@ async function getUsers() {
       user.role +
       " <span class='delete-user' id='" +
       user.id +
-      "''>❌</span></li>";
-    document.getElementById(user.id).onclick = async () => {
-      await deleteUserById(user.id);
-    };
+      "' onclick='deleteUserById(\"" +
+      user.id +
+      "\")'>❌</span></li>";
   });
 
   document.getElementById("loading").style.display = "none";
