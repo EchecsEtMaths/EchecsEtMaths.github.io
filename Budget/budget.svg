@@ -1,0 +1,36 @@
+    <svg width="60" height="60" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- Dégradé Indigo vers Vert pastel -->
+        <defs>
+            <linearGradient id="logo-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#6366f1" />
+                <stop offset="100%" stop-color="#34d399" />
+            </linearGradient>
+            <filter id="glow" x="-10%" y="-10%" width="120%" height="120%">
+                <stop offset="0%" stop-color="#6366f1" />
+                <feGaussianBlur stdDeviation="3" result="blur" />
+                <feComposite in="SourceGraphic" in2="blur" operator="over" />
+            </filter>
+        </defs>
+
+        <!-- Cercle de fond avec effet de contour -->
+        <circle cx="50" cy="50" r="46" stroke="url(#logo-gradient)" stroke-width="2.5" stroke-dasharray="6 3" opacity="0.4" />
+        <circle cx="50" cy="50" r="42" fill="#1e293b" />
+
+        <!-- Graphique de croissance stylisé au centre -->
+        <path d="M28 65 L42 50 L58 58 L72 38" stroke="url(#logo-gradient)" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round" filter="url(#glow)"/>
+        
+        <!-- Les cercles représentant Enora (violet) et Axel (vert) aux extrémités -->
+        <circle cx="28" cy="65" r="5" fill="#6366f1" />
+        <circle cx="72" cy="38" r="5" fill="#34d399" />
+
+        <!-- Flèches d'échange incurvées (Équilibrage/Comptes) -->
+        <path d="M43 35 C 47 28, 53 28, 57 35" stroke="#94a3b8" stroke-width="2" stroke-linecap="round" fill="none" />
+        <path d="M57 35 L53 35 M57 35 L57 31" stroke="#94a3b8" stroke-width="2" stroke-linecap="round" />
+
+        <path d="M57 65 C 53 72, 47 72, 43 65" stroke="#94a3b8" stroke-width="2" stroke-linecap="round" fill="none" />
+        <path d="M43 65 L47 65 M43 65 L43 69" stroke="#94a3b8" stroke-width="2" stroke-linecap="round" />
+
+        <!-- Symbole de la monnaie / équilibre au point culminant -->
+        <circle cx="50" cy="50" r="8" fill="url(#logo-gradient)" />
+        <text x="50" y="53" font-family="'Segoe UI', Arial" font-size="9" font-weight="bold" fill="#0f172a" text-anchor="middle">€</text>
+    </svg>
