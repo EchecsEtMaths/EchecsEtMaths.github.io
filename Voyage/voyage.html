@@ -253,7 +253,7 @@
             display: flex;
             align-items: flex-start;
             gap: 15px;
-            margin-bottom: 12px;
+            margin-bottom: 16px;
             position: relative;
             cursor: pointer;
         }
@@ -263,7 +263,7 @@
             position: absolute;
             left: 22px;
             top: 48px;
-            bottom: -12px;
+            bottom: -16px;
             width: 2px;
             background: linear-gradient(to bottom, var(--brown) 0%, transparent 100%);
             z-index: 0;
@@ -328,7 +328,7 @@
         }
 
         .step.completed .step-content {
-            background: rgba(45, 80, 22, 0.15);
+            background: rgba(45, 80, 22, 0.12);
             border-color: rgba(45, 80, 22, 0.4);
         }
 
@@ -384,6 +384,36 @@
             font-weight: bold;
         }
 
+        /* ===== ANECDOTE CROUSTILLANTE ===== */
+        .step-anecdote {
+            display: none;
+            margin-top: 10px;
+            padding: 10px 12px;
+            background: rgba(184, 134, 11, 0.12);
+            border-left: 3px solid var(--dark-gold);
+            border-radius: 4px;
+            font-size: 0.83rem;
+            color: var(--dark-brown);
+            line-height: 1.45;
+            animation: fadeIn 0.4s ease-in-out;
+        }
+
+        .step.completed .step-anecdote {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-4px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
         .badge-depart {
             color: #C0392B;
         }
@@ -415,12 +445,12 @@
             border-radius: 12px;
             padding: 15px 25px;
             color: var(--gold);
-            font-size: 1rem;
+            font-size: 0.95rem;
             text-align: center;
             z-index: 2000;
             transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
-            max-width: 350px;
+            max-width: 400px;
             width: 90%;
         }
 
@@ -799,6 +829,9 @@
                                 <div class="step-type badge-depart">⚑ Point de départ</div>
                                 <div class="step-xp">+1 XP</div>
                             </div>
+                            <div class="step-anecdote">💡 <b>Mérignac :</b> Berceau de l'aviation bordelaise depuis
+                                1910, c'est ici que les avions Rafale et Falcon sont assemblés par Dassault Aviation !
+                            </div>
                         </div>
                     </div>
 
@@ -816,6 +849,9 @@
                                 <div class="step-type badge-pause">⏸ Halte des voyageurs</div>
                                 <div class="step-xp">+1 XP</div>
                             </div>
+                            <div class="step-anecdote">💡 <b>La Souterraine (à proximité) :</b> Cité médiévale tirant
+                                son nom d'une crypte du XIe siècle. La légende dit qu'un réseau secret de souterrains y
+                                cachait d'anciens trésors.</div>
                         </div>
                     </div>
 
@@ -833,6 +869,9 @@
                                 <div class="step-type badge-pause">⏸ Halte des voyageurs</div>
                                 <div class="step-xp">+1 XP</div>
                             </div>
+                            <div class="step-anecdote">💡 <b>La Croisière :</b> Un carrefour historique où marchands
+                                gallo-romains et pèlerins de Saint-Jacques-de-Compostelle se croisaient déjà il y a plus
+                                de 1 000 ans !</div>
                         </div>
                     </div>
 
@@ -850,6 +889,9 @@
                                 <div class="step-type badge-arrivee">🏁 Camp de nuit</div>
                                 <div class="step-xp">+1 XP</div>
                             </div>
+                            <div class="step-anecdote">💡 <b>Châteauroux :</b> Le nom vient du château bâti au Xe siècle
+                                par Raoul le Large. Dans les années 50, la plus grande base militaire américaine
+                                d'Europe s'y trouvait, apportant le rock'n'roll et le chewing-gum dans la région !</div>
                         </div>
                     </div>
 
@@ -885,6 +927,8 @@
                                 <div class="step-type badge-depart">⚑ Reprise de la quête</div>
                                 <div class="step-xp">+1 XP</div>
                             </div>
+                            <div class="step-anecdote">💡 <b>Châteauroux :</b> Ville natale de Gérard Depardieu, elle a
+                                aussi inspiré de nombreuses œuvres de Stendhal et George Sand.</div>
                         </div>
                     </div>
 
@@ -902,6 +946,9 @@
                                 <div class="step-type badge-pause">⏸ Halte des voyageurs</div>
                                 <div class="step-xp">+1 XP</div>
                             </div>
+                            <div class="step-anecdote">💡 <b>Gien :</b> Célèbre dans le monde entier pour sa faïencerie
+                                créée en 1821, la ville abrite aussi le tout premier château de la Loire bâti en briques
+                                roses.</div>
                         </div>
                     </div>
 
@@ -919,6 +966,9 @@
                                 <div class="step-type badge-pause">⏸ Halte des voyageurs</div>
                                 <div class="step-xp">+1 XP</div>
                             </div>
+                            <div class="step-anecdote">💡 <b>Collemiers :</b> Des fouilles archéologiques y ont
+                                découvert des sépultures néolithiques exceptionnelles contenant des parures en
+                                coquillages datant de plus de 6 000 ans !</div>
                         </div>
                     </div>
 
@@ -936,6 +986,9 @@
                                 <div class="step-type badge-arrivee">🏁 Destination atteinte</div>
                                 <div class="step-xp">+1 XP</div>
                             </div>
+                            <div class="step-anecdote">💡 <b>Troyes :</b> Vus du ciel, les remparts et les canaux du
+                                centre historique médiéval dessinent très exactement la forme d'un bouchon de champagne
+                                !</div>
                         </div>
                     </div>
 
@@ -953,6 +1006,9 @@
                                 <div class="step-type badge-event">⭐ Événement</div>
                                 <div class="step-xp">+1 XP</div>
                             </div>
+                            <div class="step-anecdote">💡 <b>L'Andouillette de Troyes :</b> La légende raconte qu'en
+                                1590, les soldats d'Henri IV ont raté la reprise de la ville parce qu'ils s'étaient
+                                arrêtés trop longtemps pour déguster des andouillettes !</div>
                         </div>
                     </div>
 
@@ -970,6 +1026,9 @@
                                 <div class="step-type badge-event">🎉 Anniversaire de mariage</div>
                                 <div class="step-xp">+1 XP</div>
                             </div>
+                            <div class="step-anecdote">💡 <b>St-Léger-Près-Troyes :</b> Située au bord du parc naturel
+                                de la Forêt d'Orient, la commune est entourée de lacs d'eau douce gigantesques créés
+                                pour protéger Paris des crues de la Seine.</div>
                         </div>
                     </div>
 
@@ -1005,6 +1064,9 @@
                                 <div class="step-type badge-depart">⚑ Reprise de la quête</div>
                                 <div class="step-xp">+1 XP</div>
                             </div>
+                            <div class="step-anecdote">💡 <b>Troyes & les Templiers :</b> C'est lors du Concile de
+                                Troyes en 1129 que l'Ordre des Templiers a été officiellement fondé et doté de sa règle
+                                monastique !</div>
                         </div>
                     </div>
 
@@ -1022,6 +1084,9 @@
                                 <div class="step-type badge-sejour">🏰 Séjour (30 Août – 02 Sept)</div>
                                 <div class="step-xp">+1 XP</div>
                             </div>
+                            <div class="step-anecdote">💡 <b>Reims :</b> Cité des Sacres où 33 rois de France ont été
+                                couronnés dans sa cathédrale. Sous ses rues dorment plus de 200 km de caves de champagne
+                                gallo-romaines !</div>
                         </div>
                     </div>
 
@@ -1057,6 +1122,8 @@
                                 <div class="step-type badge-depart">⚑ Début du retour</div>
                                 <div class="step-xp">+1 XP</div>
                             </div>
+                            <div class="step-anecdote">💡 <b>Reims :</b> La cathédrale de Reims compte plus de 2 300
+                                statues, dont la plus célèbre au monde : l'Ange au Sourire !</div>
                         </div>
                     </div>
 
@@ -1073,6 +1140,9 @@
                             <div class="step-meta-line">
                                 <div class="step-type badge-pause">⏸ Halte des voyageurs</div>
                                 <div class="step-xp">+1 XP</div>
+                            </div>
+                            <div class="step-anecdote">💡 <b>Châlons-en-Champagne (proche) :</b> Surnommée la « Venise
+                                pétillante » en raison de ses nombreux canaux et galeries naviguables sous la ville !
                             </div>
                         </div>
                     </div>
@@ -1091,6 +1161,9 @@
                                 <div class="step-type badge-pause">⏸ Halte des voyageurs</div>
                                 <div class="step-xp">+1 XP</div>
                             </div>
+                            <div class="step-anecdote">💡 <b>Sens (à proximité) :</b> La cathédrale de Sens, toute
+                                proche, est historiquement la toute première cathédrale gothique de France, devançant
+                                même Notre-Dame de Paris !</div>
                         </div>
                     </div>
 
@@ -1108,6 +1181,9 @@
                                 <div class="step-type badge-pause">⏸ Halte des voyageurs</div>
                                 <div class="step-xp">+1 XP</div>
                             </div>
+                            <div class="step-anecdote">💡 <b>Neuvy-sur-Barangeon :</b> Niché au cœur de la Sologne,
+                                cette région mystique était autrefois réputée pour ses histoires de sorcellerie, de
+                                braconnage et de feux follets dans les étangs.</div>
                         </div>
                     </div>
 
@@ -1125,6 +1201,9 @@
                                 <div class="step-type badge-arrivee">🏁 Camp de nuit</div>
                                 <div class="step-xp">+1 XP</div>
                             </div>
+                            <div class="step-anecdote">💡 <b>Nohant (près de Châteauroux) :</b> George Sand y possédait
+                                son domaine où elle invitait Frédéric Chopin, Eugène Delacroix et Gustave Flaubert pour
+                                de longues nuits créatives.</div>
                         </div>
                     </div>
 
@@ -1160,6 +1239,9 @@
                                 <div class="step-type badge-depart">⚑ Dernière ligne droite</div>
                                 <div class="step-xp">+1 XP</div>
                             </div>
+                            <div class="step-anecdote">💡 <b>La Brenne :</b> Juste à côté de Châteauroux se trouve le
+                                parc naturel de la Brenne, surnommé le « pays des mille étangs », façonnés au Moyen Âge
+                                par des moines pisciculteurs.</div>
                         </div>
                     </div>
 
@@ -1176,6 +1258,9 @@
                                 <div class="step-type badge-pause">⏸ Halte des voyageurs</div>
                                 <div class="step-xp">+1 XP</div>
                             </div>
+                            <div class="step-anecdote">💡 <b>Les Maçons de la Creuse :</b> C'est depuis ces terres
+                                creusoises que partaient les maçons saisonniers au XIXe siècle, responsables d'avoir
+                                bâti une grande partie du Paris haussmannien !</div>
                         </div>
                     </div>
 
@@ -1193,6 +1278,9 @@
                                 <div class="step-type badge-pause">⏸ Halte des voyageurs</div>
                                 <div class="step-xp">+1 XP</div>
                             </div>
+                            <div class="step-anecdote">💡 <b>Légendes de Creuse :</b> Le folklore local prétend que les
+                                chaos rocheux de la région étaient l'œuvre de fées espiègles accordant des vœux aux
+                                voyageurs égarés.</div>
                         </div>
                     </div>
 
@@ -1210,6 +1298,8 @@
                                 <div class="step-type badge-arrivee">🏆 Objectif final accompli</div>
                                 <div class="step-xp">+1 XP</div>
                             </div>
+                            <div class="step-anecdote">💡 <b>Mérignac :</b> Retour au bercail ! Mérignac abrite aussi le
+                                donjon médiéval de la Tour de Veyrines, datant du XIVe siècle.</div>
                         </div>
                     </div>
 
@@ -1333,31 +1423,31 @@
 
         // ===== COORDONNÉES GPS POUR CHAQUE ÉTAPE =====
         const stepCoords = {
-            'step-1-1': { lat: 44.8378, lon: -0.6472 }, // Mérignac
-            'step-1-2': { lat: 46.2800, lon: 1.3400 },  // Aire de Pont-à-Brac
-            'step-1-3': { lat: 46.2120, lon: 1.4550 },  // Aire de La Croisière
-            'step-1-4': { lat: 46.8117, lon: 1.6931 },  // Châteauroux
+            'step-1-1': { lat: 44.8378, lon: -0.6472 },
+            'step-1-2': { lat: 46.2800, lon: 1.3400 },
+            'step-1-3': { lat: 46.2120, lon: 1.4550 },
+            'step-1-4': { lat: 46.8117, lon: 1.6931 },
 
-            'step-2-1': { lat: 46.8117, lon: 1.6931 },  // Châteauroux
-            'step-2-2': { lat: 47.6850, lon: 2.6300 },  // Gien
-            'step-2-3': { lat: 48.1560, lon: 3.2500 },  // Collemiers
-            'step-2-4': { lat: 48.2973, lon: 4.0744 },  // Troyes
-            'step-2-5': { lat: 48.2973, lon: 4.0744 },  // Troyes
-            'step-2-6': { lat: 48.2350, lon: 4.0900 },  // St-Léger-Près-Troyes
+            'step-2-1': { lat: 46.8117, lon: 1.6931 },
+            'step-2-2': { lat: 47.6850, lon: 2.6300 },
+            'step-2-3': { lat: 48.1560, lon: 3.2500 },
+            'step-2-4': { lat: 48.2973, lon: 4.0744 },
+            'step-2-5': { lat: 48.2973, lon: 4.0744 },
+            'step-2-6': { lat: 48.2350, lon: 4.0900 },
 
-            'step-3-1': { lat: 48.2973, lon: 4.0744 },  // Troyes
-            'step-3-2': { lat: 49.2583, lon: 4.0317 },  // Reims
+            'step-3-1': { lat: 48.2973, lon: 4.0744 },
+            'step-3-2': { lat: 49.2583, lon: 4.0317 },
 
-            'step-4-1': { lat: 49.2583, lon: 4.0317 },  // Reims
-            'step-4-2': { lat: 49.0700, lon: 3.8700 },  // Plan d'eau du Mouteuil
-            'step-4-3': { lat: 48.1560, lon: 3.2500 },  // Collemiers
-            'step-4-4': { lat: 47.3150, lon: 2.2530 },  // Neuvy-sur-Barangeon
-            'step-4-5': { lat: 46.8117, lon: 1.6931 },  // Châteauroux
+            'step-4-1': { lat: 49.2583, lon: 4.0317 },
+            'step-4-2': { lat: 49.0700, lon: 3.8700 },
+            'step-4-3': { lat: 48.1560, lon: 3.2500 },
+            'step-4-4': { lat: 47.3150, lon: 2.2530 },
+            'step-4-5': { lat: 46.8117, lon: 1.6931 },
 
-            'step-5-1': { lat: 46.8117, lon: 1.6931 },  // Châteauroux
-            'step-5-2': { lat: 46.2120, lon: 1.4550 },  // Aire de La Croisière
-            'step-5-3': { lat: 46.2800, lon: 1.3400 },  // Aire de Pont-à-Brac
-            'step-5-4': { lat: 44.8378, lon: -0.6472 }   // Mérignac
+            'step-5-1': { lat: 46.8117, lon: 1.6931 },
+            'step-5-2': { lat: 46.2120, lon: 1.4550 },
+            'step-5-3': { lat: 46.2800, lon: 1.3400 },
+            'step-5-4': { lat: 44.8378, lon: -0.6472 }
         };
 
         function getWeatherEmoji(code) {
@@ -1380,8 +1470,6 @@
                     `https://api.open-meteo.com/v1/forecast?latitude=${lats}&longitude=${lons}&current_weather=true`
                 );
                 const results = await response.json();
-
-                // Quand plusieurs coordonnées sont fournies, Open-Meteo renvoie un tableau de résultats
                 const dataArray = Array.isArray(results) ? results : [results];
 
                 stepIds.forEach((id, index) => {
