@@ -1,0 +1,1568 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Troyes-Reims 2026 🗺️</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --gold: #FFD700;
+            --dark-gold: #B8860B;
+            --parchment: #F4E4BC;
+            --dark-parchment: #E8D5A3;
+            --brown: #8B4513;
+            --dark-brown: #5C2E00;
+            --green: #2D5016;
+            --light-green: #4A7C23;
+            --red: #8B0000;
+            --light-red: #C0392B;
+            --text-dark: #2C1810;
+            --completed: #2D5016;
+            --shadow: rgba(0, 0, 0, 0.4);
+        }
+
+        body {
+            font-family: 'Georgia', serif;
+            background-color: #1a0f00;
+            background-image:
+                radial-gradient(ellipse at top, #2d1a00 0%, #1a0f00 50%),
+                url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23FFD700' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            min-height: 100vh;
+            color: var(--text-dark);
+        }
+
+        /* ===== TABS ===== */
+        .tabs-container {
+            display: flex;
+            justify-content: center;
+            gap: 0;
+            padding: 20px 20px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: linear-gradient(to bottom, #1a0f00 80%, transparent);
+        }
+
+        .tab-btn {
+            padding: 12px 30px;
+            font-family: 'Georgia', serif;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            border: 2px solid var(--gold);
+            background: linear-gradient(135deg, #3d2000, #1a0f00);
+            color: var(--gold);
+            letter-spacing: 1px;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .tab-btn:first-child {
+            border-radius: 8px 0 0 8px;
+            border-right: 1px solid var(--gold);
+        }
+
+        .tab-btn:last-child {
+            border-radius: 0 8px 8px 0;
+            border-left: 1px solid var(--gold);
+        }
+
+        .tab-btn.active {
+            background: linear-gradient(135deg, var(--gold), var(--dark-gold));
+            color: var(--dark-brown);
+        }
+
+        .tab-btn:hover:not(.active) {
+            background: linear-gradient(135deg, #5c3300, #2d1a00);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* ===== HEADER ===== */
+        .header {
+            text-align: center;
+            padding: 30px 20px 20px;
+            position: relative;
+        }
+
+        .header::before {
+            content: '⚔️';
+            font-size: 2rem;
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        .header h1 {
+            font-size: clamp(1.8rem, 5vw, 3rem);
+            color: var(--gold);
+            text-shadow: 2px 2px 4px var(--shadow), 0 0 20px rgba(255, 215, 0, 0.3);
+            letter-spacing: 3px;
+            text-transform: uppercase;
+        }
+
+        .header .subtitle {
+            color: var(--dark-gold);
+            font-style: italic;
+            margin-top: 8px;
+            font-size: clamp(0.9rem, 2.5vw, 1.1rem);
+        }
+
+        .header .heroes {
+            margin-top: 15px;
+            color: var(--parchment);
+            font-size: 1.1rem;
+        }
+
+        /* ===== XP BAR GLOBALE ===== */
+        .global-progress {
+            max-width: 800px;
+            margin: 0 auto 30px;
+            padding: 0 20px;
+        }
+
+        .xp-label {
+            display: flex;
+            justify-content: space-between;
+            color: var(--gold);
+            font-size: 0.9rem;
+            margin-bottom: 8px;
+            letter-spacing: 1px;
+        }
+
+        .xp-bar-outer {
+            background: #2d1a00;
+            border: 2px solid var(--dark-gold);
+            border-radius: 20px;
+            height: 24px;
+            overflow: hidden;
+            position: relative;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        .xp-bar-inner {
+            height: 100%;
+            background: linear-gradient(90deg, var(--dark-gold), var(--gold), #FFF176, var(--gold));
+            background-size: 200% 100%;
+            border-radius: 20px;
+            transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            animation: shimmer 2s infinite linear;
+            position: relative;
+        }
+
+        @keyframes shimmer {
+            0% {
+                background-position: 200% 0;
+            }
+
+            100% {
+                background-position: -200% 0;
+            }
+        }
+
+        .xp-bar-inner::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 20px 20px 0 0;
+        }
+
+        /* ===== CARTE PRINCIPALE ===== */
+        .map-scroll {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0 15px 40px;
+        }
+
+        /* ===== JOURNÉE ===== */
+        .day-section {
+            margin-bottom: 40px;
+            background: linear-gradient(135deg, rgba(244, 228, 188, 0.95), rgba(232, 213, 163, 0.95));
+            border: 3px solid var(--brown);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow:
+                0 8px 32px rgba(0, 0, 0, 0.5),
+                inset 0 1px 0 rgba(255, 255, 255, 0.3);
+            position: relative;
+        }
+
+        .day-section::before {
+            content: '';
+            position: absolute;
+            top: 3px;
+            left: 3px;
+            right: 3px;
+            bottom: 3px;
+            border: 1px solid rgba(139, 69, 19, 0.3);
+            border-radius: 10px;
+            pointer-events: none;
+        }
+
+        .day-header {
+            background: linear-gradient(135deg, var(--brown), var(--dark-brown));
+            padding: 15px 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .day-icon {
+            font-size: 2rem;
+            flex-shrink: 0;
+        }
+
+        .day-title {
+            flex: 1;
+        }
+
+        .day-title h2 {
+            color: var(--gold);
+            font-size: clamp(1rem, 3vw, 1.4rem);
+            letter-spacing: 2px;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+        }
+
+        .day-title p {
+            color: var(--dark-parchment);
+            font-size: 0.85rem;
+            font-style: italic;
+            margin-top: 3px;
+        }
+
+        .day-xp {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--gold);
+            border-radius: 20px;
+            padding: 5px 12px;
+            color: var(--gold);
+            font-size: 0.85rem;
+            white-space: nowrap;
+        }
+
+        .day-completed-badge {
+            display: none;
+            background: linear-gradient(135deg, #2D5016, #4A7C23);
+            border: 2px solid var(--gold);
+            border-radius: 20px;
+            padding: 5px 12px;
+            color: var(--gold);
+            font-size: 0.8rem;
+            white-space: nowrap;
+        }
+
+        .day-section.completed .day-completed-badge {
+            display: inline-block;
+        }
+
+        /* ===== ÉTAPES ===== */
+        .steps-container {
+            padding: 20px;
+            position: relative;
+        }
+
+        .step {
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+            margin-bottom: 10px;
+            position: relative;
+            cursor: pointer;
+        }
+
+        /* Ligne de connexion */
+        .step:not(:last-child)::after {
+            content: '';
+            position: absolute;
+            left: 22px;
+            top: 46px;
+            bottom: -10px;
+            width: 2px;
+            background: linear-gradient(to bottom, var(--brown) 0%, transparent 100%);
+            z-index: 0;
+        }
+
+        /* Icône de l'étape */
+        .step-icon-wrap {
+            position: relative;
+            z-index: 1;
+            flex-shrink: 0;
+        }
+
+        .step-icon {
+            width: 46px;
+            height: 46px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+            border: 3px solid var(--brown);
+            background: linear-gradient(135deg, var(--parchment), var(--dark-parchment));
+            transition: all 0.3s;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .step.completed .step-icon {
+            background: linear-gradient(135deg, #4A7C23, #2D5016);
+            border-color: var(--gold);
+            box-shadow: 0 0 12px rgba(255, 215, 0, 0.4);
+        }
+
+        .step.completed .step-icon::after {
+            content: '✓';
+            position: absolute;
+            font-size: 1rem;
+            color: var(--gold);
+            font-weight: bold;
+            bottom: -2px;
+            right: -2px;
+            background: var(--dark-brown);
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.65rem;
+            border: 1px solid var(--gold);
+        }
+
+        /* Contenu de l'étape */
+        .step-content {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.4);
+            border: 1px solid rgba(139, 69, 19, 0.3);
+            border-radius: 8px;
+            padding: 10px 15px;
+            transition: all 0.3s;
+        }
+
+        .step:hover .step-content {
+            background: rgba(255, 255, 255, 0.6);
+            transform: translateX(3px);
+        }
+
+        .step.completed .step-content {
+            background: rgba(45, 80, 22, 0.15);
+            border-color: rgba(45, 80, 22, 0.4);
+        }
+
+        .step-name {
+            font-weight: bold;
+            color: var(--dark-brown);
+            font-size: clamp(0.9rem, 2.5vw, 1rem);
+        }
+
+        .step.completed .step-name {
+            color: var(--completed);
+            text-decoration: line-through;
+            text-decoration-color: rgba(45, 80, 22, 0.5);
+        }
+
+        .step-type {
+            font-size: 0.75rem;
+            color: var(--brown);
+            font-style: italic;
+            margin-top: 2px;
+        }
+
+        .step-xp {
+            font-size: 0.75rem;
+            color: var(--dark-gold);
+            margin-top: 4px;
+            font-weight: bold;
+        }
+
+        /* ===== TYPE badges ===== */
+        .badge-depart {
+            color: #C0392B;
+        }
+
+        .badge-pause {
+            color: #7D6608;
+        }
+
+        .badge-arrivee {
+            color: #1A5276;
+        }
+
+        .badge-event {
+            color: #6C3483;
+        }
+
+        .badge-sejour {
+            color: #117A65;
+        }
+
+        /* ===== NOTIFICATION TOAST ===== */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: linear-gradient(135deg, var(--brown), var(--dark-brown));
+            border: 2px solid var(--gold);
+            border-radius: 12px;
+            padding: 15px 25px;
+            color: var(--gold);
+            font-size: 1rem;
+            text-align: center;
+            z-index: 1000;
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+            max-width: 350px;
+            width: 90%;
+        }
+
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+        }
+
+        .toast .toast-emoji {
+            font-size: 1.5rem;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        /* ===== CONFETTI (simulé) ===== */
+        .confetti-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 999;
+        }
+
+        .confetti-piece {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            top: -10px;
+            animation: confetti-fall 3s ease-in forwards;
+        }
+
+        @keyframes confetti-fall {
+            0% {
+                transform: translateY(0) rotate(0deg);
+                opacity: 1;
+            }
+
+            100% {
+                transform: translateY(110vh) rotate(720deg);
+                opacity: 0;
+            }
+        }
+
+        /* ===== MODAL VICTOIRE ===== */
+        .victory-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.85);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .victory-modal.show {
+            display: flex;
+        }
+
+        .victory-card {
+            background: linear-gradient(135deg, var(--parchment), var(--dark-parchment));
+            border: 4px solid var(--gold);
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+            max-width: 450px;
+            width: 90%;
+            box-shadow: 0 0 60px rgba(255, 215, 0, 0.3);
+            animation: victoryPop 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        @keyframes victoryPop {
+            0% {
+                transform: scale(0.5);
+                opacity: 0;
+            }
+
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .victory-card h2 {
+            font-size: 2rem;
+            color: var(--dark-brown);
+            margin: 15px 0 10px;
+        }
+
+        .victory-card p {
+            color: var(--brown);
+            font-style: italic;
+            margin-bottom: 20px;
+        }
+
+        .victory-card .big-emoji {
+            font-size: 4rem;
+        }
+
+        .victory-close {
+            background: linear-gradient(135deg, var(--gold), var(--dark-gold));
+            border: none;
+            border-radius: 8px;
+            padding: 10px 30px;
+            font-family: 'Georgia', serif;
+            font-size: 1rem;
+            font-weight: bold;
+            color: var(--dark-brown);
+            cursor: pointer;
+            letter-spacing: 1px;
+        }
+
+        /* ===== ONGLET MINI-JEUX ===== */
+        .games-container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px 15px 40px;
+        }
+
+        .games-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .games-header h2 {
+            color: var(--gold);
+            font-size: clamp(1.4rem, 4vw, 2rem);
+            letter-spacing: 2px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        .games-header p {
+            color: var(--dark-gold);
+            font-style: italic;
+            margin-top: 8px;
+        }
+
+        .games-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .game-card {
+            background: linear-gradient(135deg, rgba(244, 228, 188, 0.95), rgba(232, 213, 163, 0.95));
+            border: 2px solid var(--brown);
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+        }
+
+        .game-card-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .game-emoji {
+            font-size: 2rem;
+        }
+
+        .game-title {
+            font-size: 1.05rem;
+            font-weight: bold;
+            color: var(--dark-brown);
+        }
+
+        .game-desc {
+            color: var(--brown);
+            font-size: 0.9rem;
+            line-height: 1.5;
+            margin-bottom: 12px;
+        }
+
+        .game-rules {
+            background: rgba(255, 255, 255, 0.4);
+            border-left: 3px solid var(--brown);
+            padding: 8px 12px;
+            font-size: 0.82rem;
+            color: var(--dark-brown);
+            border-radius: 0 6px 6px 0;
+            font-style: italic;
+        }
+
+        /* ===== SCORE MINI-JEUX ===== */
+        .score-tracker {
+            background: linear-gradient(135deg, rgba(244, 228, 188, 0.95), rgba(232, 213, 163, 0.95));
+            border: 3px solid var(--brown);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+        }
+
+        .score-tracker h3 {
+            color: var(--dark-brown);
+            text-align: center;
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+            letter-spacing: 1px;
+        }
+
+        .scores {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .score-player {
+            text-align: center;
+            flex: 1;
+            min-width: 120px;
+        }
+
+        .score-player-name {
+            font-weight: bold;
+            color: var(--brown);
+            margin-bottom: 8px;
+            font-size: 1rem;
+        }
+
+        .score-display {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: var(--dark-brown);
+            line-height: 1;
+        }
+
+        .score-btn-group {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            margin-top: 10px;
+        }
+
+        .score-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border: 2px solid var(--brown);
+            background: linear-gradient(135deg, var(--parchment), var(--dark-parchment));
+            color: var(--dark-brown);
+            font-size: 1.2rem;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.2s;
+        }
+
+        .score-btn:hover {
+            background: linear-gradient(135deg, var(--gold), var(--dark-gold));
+        }
+
+        .score-reset {
+            display: block;
+            margin: 15px auto 0;
+            padding: 8px 20px;
+            background: linear-gradient(135deg, var(--brown), var(--dark-brown));
+            border: 1px solid var(--gold);
+            border-radius: 8px;
+            color: var(--gold);
+            font-family: 'Georgia', serif;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .score-reset:hover {
+            background: linear-gradient(135deg, var(--red), var(--dark-brown));
+        }
+
+        /* ===== DÉFI ALÉATOIRE ===== */
+        .random-challenge {
+            background: linear-gradient(135deg, rgba(244, 228, 188, 0.95), rgba(232, 213, 163, 0.95));
+            border: 3px solid var(--gold);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 30px;
+            text-align: center;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3), 0 0 20px rgba(255, 215, 0, 0.1);
+        }
+
+        .random-challenge h3 {
+            color: var(--dark-brown);
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+        }
+
+        .challenge-display {
+            background: rgba(255, 255, 255, 0.5);
+            border: 1px solid var(--brown);
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+            font-size: 1rem;
+            color: var(--dark-brown);
+            min-height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-style: italic;
+        }
+
+        .roll-btn {
+            background: linear-gradient(135deg, var(--gold), var(--dark-gold));
+            border: none;
+            border-radius: 8px;
+            padding: 12px 28px;
+            font-family: 'Georgia', serif;
+            font-size: 1rem;
+            font-weight: bold;
+            color: var(--dark-brown);
+            cursor: pointer;
+            letter-spacing: 1px;
+            transition: all 0.2s;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .roll-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .roll-btn:active {
+            transform: translateY(0);
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 600px) {
+            .tabs-container {
+                padding: 12px 12px 0;
+            }
+
+            .tab-btn {
+                padding: 10px 16px;
+                font-size: 0.85rem;
+            }
+
+            .day-header {
+                padding: 12px 15px;
+            }
+
+            .steps-container {
+                padding: 15px;
+            }
+
+            .step-icon {
+                width: 40px;
+                height: 40px;
+                font-size: 1.1rem;
+            }
+
+            .step:not(:last-child)::after {
+                left: 19px;
+            }
+
+            .victory-card {
+                padding: 25px 20px;
+            }
+
+            .games-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* ===== ANIMATIONS ===== */
+        @keyframes pulse-gold {
+
+            0%,
+            100% {
+                box-shadow: 0 0 8px rgba(255, 215, 0, 0.2);
+            }
+
+            50% {
+                box-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+            }
+        }
+
+        .step:not(.completed) .step-icon {
+            animation: pulse-gold 3s ease-in-out infinite;
+        }
+
+        .day-section.completed {
+            border-color: var(--gold);
+        }
+
+        .day-section.completed .day-header {
+            background: linear-gradient(135deg, #2D5016, #4A7C23);
+        }
+
+        /* Étoiles décoratives */
+        .stars-decoration {
+            text-align: center;
+            color: var(--gold);
+            font-size: 0.8rem;
+            letter-spacing: 8px;
+            margin: 10px 0;
+            opacity: 0.6;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- TABS -->
+    <div class="tabs-container">
+        <button class="tab-btn active" onclick="switchTab('roadmap')">🗺️ La Quête</button>
+        <button class="tab-btn" onclick="switchTab('games')">⚔️ Mini-Jeux</button>
+    </div>
+
+    <!-- ===== ONGLET ROADMAP ===== -->
+    <div id="tab-roadmap" class="tab-content active">
+
+        <div class="header">
+            <h1>⚜️ Troyes-Reims 2026 ⚜️</h1>
+            <p class="subtitle">La Grande Quête de l'Été</p>
+            <p class="heroes">🧙 Deux aventuriers en route vers les contrées du Nord ✨</p>
+        </div>
+
+        <!-- XP BAR GLOBALE -->
+        <div class="global-progress">
+            <div class="xp-label">
+                <span>⚡ Progression de la Quête</span>
+                <span id="xp-text">0 / 18 étapes</span>
+            </div>
+            <div class="xp-bar-outer">
+                <div class="xp-bar-inner" id="xp-bar" style="width: 0%"></div>
+            </div>
+        </div>
+
+        <div class="map-scroll">
+
+            <!-- ===== JOUR 1 ===== -->
+            <div class="day-section" id="day-1">
+                <div class="day-header">
+                    <div class="day-icon">🌅</div>
+                    <div class="day-title">
+                        <h2>Jour 1 — Jeudi 28 Août</h2>
+                        <p>Mérignac → Châteauroux · Le Grand Départ</p>
+                    </div>
+                    <div class="day-xp">+4 XP</div>
+                    <div class="day-completed-badge">✓ Journée accomplie !</div>
+                </div>
+                <div class="steps-container">
+
+                    <div class="step" id="step-1-1"
+                        onclick="toggleStep('step-1-1', 'day-1', '🏠 Vous quittez le foyer ! La quête commence !', 1)">
+                        <div class="step-icon-wrap">
+                            <div class="step-icon">🏠</div>
+                        </div>
+                        <div class="step-content">
+                            <div class="step-name">Départ de Mérignac</div>
+                            <div class="step-type badge-depart">⚑ Point de départ</div>
+                            <div class="step-xp">+1 XP</div>
+                        </div>
+                    </div>
+
+                    <div class="step" id="step-1-2"
+                        onclick="toggleStep('step-1-2', 'day-1', '☕ Pause méritée à Pont-à-Brac ! Rechargez vos forces !', 1)">
+                        <div class="step-icon-wrap">
+                            <div class="step-icon">🛣️</div>
+                        </div>
+                        <div class="step-content">
+                            <div class="step-name">Pause — Aire de Pont-à-Brac</div>
+                            <div class="step-type badge-pause">⏸ Halte des voyageurs</div>
+                            <div class="step-xp">+1 XP</div>
+                        </div>
+                    </div>
+
+                    <div class="step" id="step-1-3"
+                        onclick="toggleStep('step-1-3', 'day-1', '🌿 Deuxième souffle à La Croisière ! Presque arrivés !', 1)">
+                        <div class="step-icon-wrap">
+                            <div class="step-icon">🌿</div>
+                        </div>
+                        <div class="step-content">
+                            <div class="step-name">Pause — Aire de La Croisière</div>
+                            <div class="step-type badge-pause">⏸ Halte des voyageurs</div>
+                            <div class="step-xp">+1 XP</div>
+                        </div>
+                    </div>
+
+                    <div class="step" id="step-1-4"
+                        onclick="toggleStep('step-1-4', 'day-1', '🏨 Première nuit à Châteauroux ! Repos bien mérité, aventuriers !', 1)">
+                        <div class="step-icon-wrap">
+                            <div class="step-icon">🏨</div>
+                        </div>
+                        <div class="step-content">
+                            <div class="step-name">Arrivée — Hôtel B&B Châteauroux A20</div>
+                            <div class="step-type badge-arrivee">🏁 Camp de nuit</div>
+                            <div class="step-xp">+1 XP</div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="stars-decoration">✦ ✦ ✦</div>
+
+            <!-- ===== JOUR 2 ===== -->
+            <div class="day-section" id="day-2">
+                <div class="day-header">
+                    <div class="day-icon">🗡️</div>
+                    <div class="day-title">
+                        <h2>Jour 2 — Vendredi 29 Août</h2>
+                        <p>Châteauroux → Troyes · La Route du Festin</p>
+                    </div>
+                    <div class="day-xp">+6 XP</div>
+                    <div class="day-completed-badge">✓ Journée accomplie !</div>
+                </div>
+                <div class="steps-container">
+
+                    <div class="step" id="step-2-1"
+                        onclick="toggleStep('step-2-1', 'day-2', '☀️ En route depuis Châteauroux ! La route vers Troyes vous attend !', 2)">
+                        <div class="step-icon-wrap">
+                            <div class="step-icon">🏨</div>
+                        </div>
+                        <div class="step-content">
+                            <div class="step-name">Départ de l'Hôtel B&B Châteauroux</div>
+                            <div class="step-type badge-depart">⚑ Reprise de la quête</div>
+                            <div class="step-xp">+1 XP</div>
+                        </div>
+                    </div>
+
+                    <div class="step" id="step-2-2"
+                        onclick="toggleStep('step-2-2', 'day-2', '💧 Pause au bord de la piscine de Gien ! On souffle !', 2)">
+                        <div class="step-icon-wrap">
+                            <div class="step-icon">🏊</div>
+                        </div>
+                        <div class="step-content">
+                            <div class="step-name">Pause — Parking Piscine de Gien</div>
+                            <div class="step-type badge-pause">⏸ Halte des voyageurs</div>
+                            <div class="step-xp">+1 XP</div>
+                        </div>
+                    </div>
+
+                    <div class="step" id="step-2-3"
+                        onclick="toggleStep('step-2-3', 'day-2', '🌾 Pause à Collemiers ! Le chemin de Troyes est presque tracé !', 2)">
+                        <div class="step-icon-wrap">
+                            <div class="step-icon">🏘️</div>
+                        </div>
+                        <div class="step-content">
+                            <div class="step-name">Pause — Salle Communale de Collemiers</div>
+                            <div class="step-type badge-pause">⏸ Halte des voyageurs</div>
+                            <div class="step-xp">+1 XP</div>
+                        </div>
+                    </div>
+
+                    <div class="step" id="step-2-4"
+                        onclick="toggleStep('step-2-4', 'day-2', '🎉 Troyes ! La cité aux rues en forme de bouchon de Champagne vous accueille !', 2)">
+                        <div class="step-icon-wrap">
+                            <div class="step-icon">🅿️</div>
+                        </div>
+                        <div class="step-content">
+                            <div class="step-name">Arrivée — Parking Langevin, Troyes</div>
+                            <div class="step-type badge-arrivee">🏁 Destination atteinte</div>
+                            <div class="step-xp">+1 XP</div>
+                        </div>
+                    </div>
+
+                    <div class="step" id="step-2-5"
+                        onclick="toggleStep('step-2-5', 'day-2', '🍽️ À table ! Que le festin commence !', 2)">
+                        <div class="step-icon-wrap">
+                            <div class="step-icon">🍽️</div>
+                        </div>
+                        <div class="step-content">
+                            <div class="step-name">Repas au restaurant — Troyes</div>
+                            <div class="step-type badge-event">⭐ Événement</div>
+                            <div class="step-xp">+1 XP</div>
+                        </div>
+                    </div>
+
+                    <div class="step" id="step-2-6"
+                        onclick="toggleStep('step-2-6', 'day-2', '🎊 L\'anniversaire de mariage commence ! Vive les mariés !', 2)">
+                        <div class="step-icon-wrap">
+                            <div class="step-icon">💍</div>
+                        </div>
+                        <div class="step-content">
+                            <div class="step-name">Fête — Salle des Fêtes Saint-Léger-Près-Troyes</div>
+                            <div class="step-type badge-event">🎉 Événement Spécial — Anniversaire de mariage</div>
+                            <div class="step-xp">+1 XP</div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="stars-decoration">✦ ✦ ✦</div>
+
+            <!-- ===== JOUR 3 ===== -->
+            <div class="day-section" id="day-3">
+                <div class="day-header">
+                    <div class="day-icon">🏰</div>
+                    <div class="day-title">
+                        <h2>Jour 3 — Samedi 30 Août</h2>
+                        <p>Troyes → Reims · Vers la Cité du Sacre</p>
+                    </div>
+                    <div class="day-xp">+2 XP</div>
+                    <div class="day-completed-badge">✓ Journée accomplie !</div>
+                </div>
+                <div class="steps-container">
+
+                    <div class="step" id="step-3-1"
+                        onclick="toggleStep('step-3-1', 'day-3', '🚗 En route vers Reims ! La cité des Rois vous attend !', 3)">
+                        <div class="step-icon-wrap">
+                            <div class="step-icon">🗡️</div>
+                        </div>
+                        <div class="step-content">
+                            <div class="step-name">Départ de Troyes</div>
+                            <div class="step-type badge-depart">⚑ Reprise de la quête</div>
+                            <div class="step-xp">+1 XP</div>
+                        </div>
+                    </div>
+
+                    <div class="step" id="step-3-2"
+                        onclick="toggleStep('step-3-2', 'day-3', '🍾 REIMS ! La cité du Champagne et des Sacres ! Bienvenue chez les beaux-parents !', 3)">
+                        <div class="step-icon-wrap">
+                            <div class="step-icon">🏰</div>
+                        </div>
+                        <div class="step-content">
+                            <div class="step-name">Arrivée à Reims — Chez les Beaux-Parents</div>
+                            <div class="step-type badge-sejour">🏰 Séjour (30 Août – 02 Sept)</div>
+                            <div class="step-xp">+1 XP</div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="stars-decoration">✦ ✦ ✦</div>
+
+            <!-- ===== JOUR 4 (retour 1) ===== -->
+            <div class="day-section" id="day-4">
+                <div class="day-header">
+                    <div class="day-icon">🌄</div>
+                    <div class="day-title">
+                        <h2>Jour 4 — Mardi 02 Septembre</h2>
+                        <p>Reims → Châteauroux · Le Chemin du Retour</p>
+                    </div>
+                    <div class="day-xp">+5 XP</div>
+                    <div class="day-completed-badge">✓ Journée accomplie !</div>
+                </div>
+                <div class="steps-container">
+
+                    <div class="step" id="step-4-1"
+                        onclick="toggleStep('step-4-1', 'day-4', '🛡️ Le retour commence ! Reims restera dans vos cœurs !', 4)">
+                        <div class="step-icon-wrap">
+                            <div class="step-icon">🏰</div>
+                        </div>
+                        <div class="step-content">
+                            <div class="step-name">Départ de Reims</div>
+                            <div class="step-type badge-depart">⚑ Début du retour</div>
+                            <div class="step-xp">+1 XP</div>
+                        </div>
+                    </div>
+
+                    <div class="step" id="step-4-2"
+                        onclick="toggleStep('step-4-2', 'day-4', '💧 Pause au Plan d\'eau du Mouteuil ! Un havre de paix !', 4)">
+                        <div class="step-icon-wrap">
+                            <div class="step-icon">🏞️</div>
+                        </div>
+                        <div class="step-content">
+                            <div class="step-name">Pause — Parking Plan d'eau du Mouteuil</div>
+                            <div class="step-type badge-pause">⏸ Halte des voyageurs</div>
+                            <div class="step-xp">+1 XP</div>
+                        </div>
+                    </div>
+
+                    <div class="step" id="step-4-3"
+                        onclick="toggleStep('step-4-3', 'day-4', '🌾 Collemiers, encore ! Une vieille connaissance sur la route !', 4)">
+                        <div class="step-icon-wrap">
+                            <div class="step-icon">🏘️</div>
+                        </div>
+                        <div class="step-content">
+                            <div class="step-name">Pause — Salle Communale de Collemiers</div>
+                            <div class="step-type badge-pause">⏸ Halte des voyageurs</div>
+                            <div class="step-xp">+1 XP</div>
+                        </div>
+                    </div>
+
+                    <div class="step" id="step-4-4"
+                        onclick="toggleStep('step-4-4', 'day-4', '🌊 La Maison de l\'Eau à Neuvy-sur-Barangeon ! Une pause ressourçante !', 4)">
+                        <div class="step-icon-wrap">
+                            <div class="step-icon">💧</div>
+                        </div>
+                        <div class="step-content">
+                            <div class="step-name">Pause — Maison de l'Eau, Neuvy-sur-Barangeon</div>
+                            <div class="step-type badge-pause">⏸ Halte des voyageurs</div>
+                            <div class="step-xp">+1 XP</div>
+                        </div>
+                    </div>
+
+                    <div class="step" id="step-4-5"
+                        onclick="toggleStep('step-4-5', 'day-4', '🏨 De retour à Châteauroux ! Dernière nuit avant la maison !', 4)">
+                        <div class="step-icon-wrap">
+                            <div class="step-icon">🏨</div>
+                        </div>
+                        <div class="step-content">
+                            <div class="step-name">Arrivée — Hôtel B&B Châteauroux</div>
+                            <div class="step-type badge-arrivee">🏁 Camp de nuit</div>
+                            <div class="step-xp">+1 XP</div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="stars-decoration">✦ ✦ ✦</div>
+
+            <!-- ===== JOUR 5 (retour 2) ===== -->
+            <div class="day-section" id="day-5">
+                <div class="day-header">
+                    <div class="day-icon">🏡</div>
+                    <div class="day-title">
+                        <h2>Jour 5 — Mercredi 03 Septembre</h2>
+                        <p>Châteauroux → Mérignac · La Quête s'achève</p>
+                    </div>
+                    <div class="day-xp">+4 XP</div>
+                    <div class="day-completed-badge">✓ Journée accomplie !</div>
+                </div>
+                <div class="steps-container">
+
+                    <div class="step" id="step-5-1"
+                        onclick="toggleStep('step-5-1', 'day-5', '🌅 Dernier départ ! La maison se rapproche !', 5)">
+                        <div class="step-icon-wrap">
+                            <div class="step-icon">🏨</div>
+                        </div>
+                        <div class="step-content">
+                            <div class="step-name">Départ de l'Hôtel B&B Châteauroux</div>
+                            <div class="step-type badge-depart">⚑ Dernière ligne droite</div>
+                            <div class="step-xp">+1 XP</div>
+                        </div>
+                    </div>
+
+                    <div class="step" id="step-5-2"
+                        onclick="toggleStep('step-5-2', 'day-5', '🌿 La Croisière ! On connaît désormais cette aire comme notre poche !', 5)">
+                        <div class="step-icon-wrap">
+                            <div class="step-icon">🌿</div>
+                        </div>
+                        <div class="step-content">
+                            <div class="step-name">Pause — Aire de La Croisière</div>
+                            <div class="step-type badge-pause">⏸ Halte des voyageurs</div>
+                            <div class="step-xp">+1 XP</div>
+                        </div>
+                    </div>
+
+                    <div class="step" id="step-5-3"
+                        onclick="toggleStep('step-5-3', 'day-5', '🛣️ Pont-à-Brac, la dernière ! Plus qu\'un sprint !', 5)">
+                        <div class="step-icon-wrap">
+                            <div class="step-icon">🛣️</div>
+                        </div>
+                        <div class="step-content">
+                            <div class="step-name">Pause — Aire de Pont-à-Brac</div>
+                            <div class="step-type badge-pause">⏸ Halte des voyageurs</div>
+                            <div class="step-xp">+1 XP</div>
+                        </div>
+                    </div>
+
+                    <div class="step" id="step-5-4"
+                        onclick="toggleStep('step-5-4', 'day-5', '🏆 MÉRIGNAC ! La quête est accomplie ! Les aventuriers sont rentrés au bercail !', 5)">
+                        <div class="step-icon-wrap">
+                            <div class="step-icon">🏠</div>
+                        </div>
+                        <div class="step-content">
+                            <div class="step-name">Retour à Mérignac — FIN DE LA QUÊTE !</div>
+                            <div class="step-type badge-arrivee">🏆 Objectif final accompli</div>
+                            <div class="step-xp">+1 XP</div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- ===== ONGLET MINI-JEUX ===== -->
+    <div id="tab-games" class="tab-content">
+
+        <div class="games-container">
+
+            <div class="games-header">
+                <h2>⚔️ L'Arène des Défis ⚔️</h2>
+                <p>Des jeux pour pimenter la route entre deux aventuriers</p>
+            </div>
+
+            <!-- Score tracker -->
+            <div class="score-tracker">
+                <h3>🏆 Tableau des Champions</h3>
+                <div class="scores">
+                    <div class="score-player">
+                        <div class="score-player-name">👤 Elise</div>
+                        <div class="score-display" id="score-p1">0</div>
+                        <div class="score-btn-group">
+                            <button class="score-btn" onclick="changeScore('p1', -1)">−</button>
+                            <button class="score-btn" onclick="changeScore('p1', 1)">+</button>
+                        </div>
+                    </div>
+                    <div style="display:flex;align-items:center;font-size:1.5rem;color:var(--brown);">⚔️</div>
+                    <div class="score-player">
+                        <div class="score-player-name">👤 Benjamin</div>
+                        <div class="score-display" id="score-p2">0</div>
+                        <div class="score-btn-group">
+                            <button class="score-btn" onclick="changeScore('p2', -1)">−</button>
+                            <button class="score-btn" onclick="changeScore('p2', 1)">+</button>
+                        </div>
+                    </div>
+                </div>
+                <button class="score-reset" onclick="resetScores()">🔄 Remettre les scores à zéro</button>
+            </div>
+
+            <!-- Défi aléatoire -->
+            <div class="random-challenge">
+                <h3>🎲 Défi Aléatoire</h3>
+                <div class="challenge-display" id="challenge-display">
+                    Appuyez sur le bouton pour tirer un défi au sort !
+                </div>
+                <button class="roll-btn" onclick="rollChallenge()">🎲 Tirer un défi !</button>
+            </div>
+
+            <!-- Grille de jeux -->
+            <div class="games-grid">
+
+                <div class="game-card">
+                    <div class="game-card-header">
+                        <div class="game-emoji">🔴</div>
+                        <div class="game-title">La Chasse aux Plaques</div>
+                    </div>
+                    <div class="game-desc">Repérez les plaques d'immatriculation des autres véhicules. Le premier à
+                        trouver un département de chaque région française gagne !</div>
+                    <div class="game-rules">Règle bonus : Une plaque étrangère vaut double !</div>
+                </div>
+
+                <div class="game-card">
+                    <div class="game-card-header">
+                        <div class="game-emoji">🚗</div>
+                        <div class="game-title">Bingo Routier</div>
+                    </div>
+                    <div class="game-desc">Chacun choisit 5 choses à repérer sur la route (ex : camion rouge, panneau
+                        stop, vache, péage, camping-car...). Le premier à voir tous ses objets gagne !</div>
+                    <div class="game-rules">Vous avez 30 minutes par manche.</div>
+                </div>
+
+                <div class="game-card">
+                    <div class="game-card-header">
+                        <div class="game-emoji">🎵</div>
+                        <div class="game-title">Name That Tune</div>
+                    </div>
+                    <div class="game-desc">Un joueur fredonne ou siffle une chanson, l'autre doit trouver le titre et
+                        l'artiste. 2 points si les deux sont trouvés, 1 point si seulement le titre.</div>
+                    <div class="game-rules">10 manches par partie, alternez les rôles.</div>
+                </div>
+
+                <div class="game-card">
+                    <div class="game-card-header">
+                        <div class="game-emoji">🤔</div>
+                        <div class="game-title">Qui suis-je ?</div>
+                    </div>
+                    <div class="game-desc">Un joueur pense à une célébrité, un personnage fictif ou un animal. L'autre
+                        pose des questions auxquelles on ne peut répondre que par oui/non.</div>
+                    <div class="game-rules">Maximum 20 questions. Chaque bonne réponse = 1 point.</div>
+                </div>
+
+                <div class="game-card">
+                    <div class="game-card-header">
+                        <div class="game-emoji">📖</div>
+                        <div class="game-title">Le Storyteller</div>
+                    </div>
+                    <div class="game-desc">Inventez une histoire ensemble ! Un joueur dit une phrase, l'autre continue,
+                        et ainsi de suite. L'histoire doit durer au moins 2 minutes !</div>
+                    <div class="game-rules">Le jury (vous deux) vote pour la meilleure fin d'histoire.</div>
+                </div>
+
+                <div class="game-card">
+                    <div class="game-card-header">
+                        <div class="game-emoji">⏱️</div>
+                        <div class="game-title">Le Chrono Mystère</div>
+                    </div>
+                    <div class="game-desc">Sans regarder l'heure, estimez le temps qu'il reste avant la prochaine pause.
+                        Celui dont l'estimation est la plus proche gagne le point !</div>
+                    <div class="game-rules">Annoncez votre estimation en même temps pour éviter la triche !</div>
+                </div>
+
+                <div class="game-card">
+                    <div class="game-card-header">
+                        <div class="game-emoji">🌍</div>
+                        <div class="game-title">Géographie Express</div>
+                    </div>
+                    <div class="game-desc">Un joueur dit un pays, une ville ou un fleuve. L'autre doit enchaîner avec un
+                        lieu qui commence par la dernière lettre. Impossible de répéter !</div>
+                    <div class="game-rules">5 secondes pour répondre. Celui qui bloque perd un point.</div>
+                </div>
+
+                <div class="game-card">
+                    <div class="game-card-header">
+                        <div class="game-emoji">🔮</div>
+                        <div class="game-title">Les Prophètes de la Route</div>
+                    </div>
+                    <div class="game-desc">Avant chaque étape, pariez sur : la couleur du prochain camion vu, le chiffre
+                        qui apparaît en premier sur un panneau, ou la marque de la prochaine voiture doublée.</div>
+                    <div class="game-rules">Annoncez vos paris simultanément. 1 point par bonne prédiction.</div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast notification -->
+    <div class="toast" id="toast">
+        <span class="toast-emoji" id="toast-emoji">🎉</span>
+        <span id="toast-msg">Message</span>
+    </div>
+
+    <!-- Modal victoire finale -->
+    <div class="victory-modal" id="victory-modal">
+        <div class="victory-card">
+            <div class="big-emoji">🏆</div>
+            <h2>Quête Accomplie !</h2>
+            <p>Bravo aux deux aventuriers ! Vous avez traversé la France et êtes rentrés sains et saufs à Mérignac. La
+                légende de Troyes-Reims 2026 sera contée pendant longtemps !</p>
+            <button class="victory-close" onclick="closeVictory()">🎊 Fermer & Célébrer !</button>
+        </div>
+    </div>
+
+    <!-- Confetti container -->
+    <div class="confetti-container" id="confetti"></div>
+
+    <script>
+        // ===== DONNÉES =====
+        const daySteps = {
+            'day-1': ['step-1-1', 'step-1-2', 'step-1-3', 'step-1-4'],
+            'day-2': ['step-2-1', 'step-2-2', 'step-2-3', 'step-2-4', 'step-2-5', 'step-2-6'],
+            'day-3': ['step-3-1', 'step-3-2'],
+            'day-4': ['step-4-1', 'step-4-2', 'step-4-3', 'step-4-4', 'step-4-5'],
+            'day-5': ['step-5-1', 'step-5-2', 'step-5-3', 'step-5-4'],
+        };
+        const TOTAL_STEPS = 18;
+
+        // Sauvegarde dans localStorage
+        function saveState() {
+            const state = {};
+            Object.values(daySteps).flat().forEach(id => {
+                state[id] = document.getElementById(id).classList.contains('completed');
+            });
+            state['score-p1'] = parseInt(document.getElementById('score-p1').textContent);
+            state['score-p2'] = parseInt(document.getElementById('score-p2').textContent);
+            localStorage.setItem('troyes-reims-2026', JSON.stringify(state));
+        }
+
+        function loadState() {
+            const saved = localStorage.getItem('troyes-reims-2026');
+            if (!saved) return;
+            const state = JSON.parse(saved);
+            Object.values(daySteps).flat().forEach(id => {
+                if (state[id]) {
+                    document.getElementById(id).classList.add('completed');
+                }
+            });
+            if (state['score-p1'] !== undefined) document.getElementById('score-p1').textContent = state['score-p1'];
+            if (state['score-p2'] !== undefined) document.getElementById('score-p2').textContent = state['score-p2'];
+            updateXPBar();
+            checkAllDays();
+        }
+
+        // ===== TOGGLE STEP =====
+        function toggleStep(stepId, dayId, message, dayNum) {
+            const el = document.getElementById(stepId);
+            const wasCompleted = el.classList.contains('completed');
+
+            el.classList.toggle('completed');
+
+            if (!wasCompleted) {
+                showToast(message, getEmojiForDay(dayNum));
+                el.style.transform = 'scale(1.02)';
+                setTimeout(() => { el.style.transform = ''; }, 300);
+            }
+
+            updateXPBar();
+            checkDay(dayId);
+            checkVictory();
+            saveState();
+        }
+
+        function getEmojiForDay(d) {
+            const emojis = { 1: '🌅', 2: '🗡️', 3: '🏰', 4: '🌄', 5: '🏡' };
+            return emojis[d] || '⭐';
+        }
+
+        // ===== XP BAR =====
+        function updateXPBar() {
+            let count = 0;
+            Object.values(daySteps).flat().forEach(id => {
+                if (document.getElementById(id).classList.contains('completed')) count++;
+            });
+            const pct = (count / TOTAL_STEPS) * 100;
+            document.getElementById('xp-bar').style.width = pct + '%';
+            document.getElementById('xp-text').textContent = count + ' / ' + TOTAL_STEPS + ' étapes';
+        }
+
+        // ===== CHECK DAY =====
+        function checkDay(dayId) {
+            const steps = daySteps[dayId];
+            const allDone = steps.every(id => document.getElementById(id).classList.contains('completed'));
+            const section = document.getElementById(dayId);
+            if (allDone) {
+                section.classList.add('completed');
+            } else {
+                section.classList.remove('completed');
+            }
+        }
+
+        function checkAllDays() {
+            Object.keys(daySteps).forEach(d => checkDay(d));
+        }
+
+        // ===== VICTOIRE =====
+        function checkVictory() {
+            const allDone = Object.values(daySteps).flat().every(id =>
+                document.getElementById(id).classList.contains('completed')
+            );
+            if (allDone) {
+                setTimeout(() => {
+                    launchConfetti();
+                    document.getElementById('victory-modal').classList.add('show');
+                }, 600);
+            }
+        }
+
+        function closeVictory() {
+            document.getElementById('victory-modal').classList.remove('show');
+        }
+
+        // ===== TOAST =====
+        let toastTimeout;
+        function showToast(msg, emoji) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toast-msg').textContent = msg;
+            document.getElementById('toast-emoji').textContent = emoji || '⭐';
+            toast.classList.add('show');
+            clearTimeout(toastTimeout);
+            toastTimeout = setTimeout(() => toast.classList.remove('show'), 3500);
+        }
+
+        // ===== CONFETTI =====
+        function launchConfetti() {
+            const container = document.getElementById('confetti');
+            container.innerHTML = '';
+            const colors = ['#FFD700', '#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4', '#FFEAA7', '#DDA0DD'];
+            for (let i = 0; i < 80; i++) {
+                const piece = document.createElement('div');
+                piece.className = 'confetti-piece';
+                piece.style.left = Math.random() * 100 + 'vw';
+                piece.style.background = colors[Math.floor(Math.random() * colors.length)];
+                piece.style.width = (Math.random() * 10 + 5) + 'px';
+                piece.style.height = (Math.random() * 10 + 5) + 'px';
+                piece.style.borderRadius = Math.random() > 0.5 ? '50%' : '0';
+                piece.style.animationDelay = Math.random() * 2 + 's';
+                piece.style.animationDuration = (Math.random() * 2 + 2) + 's';
+                container.appendChild(piece);
+            }
+            setTimeout(() => container.innerHTML = '', 5000);
+        }
+
+        // ===== TABS =====
+        function switchTab(tab) {
+            document.querySelectorAll('.tab-btn').forEach((btn, i) => {
+                btn.classList.toggle('active', (tab === 'roadmap' && i === 0) || (tab === 'games' && i === 1));
+            });
+            document.getElementById('tab-roadmap').classList.toggle('active', tab === 'roadmap');
+            document.getElementById('tab-games').classList.toggle('active', tab === 'games');
+        }
+
+        // ===== SCORES =====
+        function changeScore(player, delta) {
+            const el = document.getElementById('score-' + player);
+            let val = parseInt(el.textContent) + delta;
+            if (val < 0) val = 0;
+            el.textContent = val;
+            saveState();
+        }
+
+        function resetScores() {
+            document.getElementById('score-p1').textContent = '0';
+            document.getElementById('score-p2').textContent = '0';
+            saveState();
+        }
+
+        // ===== DÉFIS ALÉATOIRES =====
+        const challenges = [
+            "🎵 Chantez ensemble la prochaine chanson qui passe à la radio, même si vous ne connaissez pas les paroles !",
+            "🔴 Le premier qui voit une voiture rouge gagne 1 point au tableau !",
+            "🤫 Silence radio pendant 2 minutes. Celui qui craque en premier paie la prochaine collation !",
+            "📸 Décrivez le plus beau paysage que vous voyez en ce moment en 3 adjectifs.",
+            "🧠 Citez 5 capitales européennes en moins de 30 secondes chacun. Le moins rapide paie !",
+            "💬 Racontez votre souvenir de voyage préféré en 1 minute chrono.",
+            "🎭 Imitez la voix du GPS pendant les 5 prochaines minutes pour donner des indications fictives.",
+            "🌈 Le premier qui voit un arc-en-ciel (ou un panneau vert) marque 2 points bonus !",
+            "🍭 Décrivez la collation de vos rêves en ce moment. L'autre doit deviner votre envie secrète.",
+            "🚛 Comptez les camions pendant 5 minutes. Celui qui en voit le plus gagne 1 point.",
+            "🎲 Pierre-feuille-ciseaux, meilleur des 5. Le perdant choisit la prochaine musique.",
+            "🧊 Devinette : Je suis grand, j'ai de l'eau, je traverse plusieurs pays. Qui suis-je ? (Un fleuve !)",
+            "📱 Chacun choisit une photo de son téléphone au hasard et raconte l'histoire derrière.",
+            "🌟 Dites 3 choses que vous adorez chez l'autre. Maintenant !",
+            "🎯 Pariez sur la prochaine ville qui apparaîtra sur un panneau. Le plus proche gagne !",
+            "🏁 Inventez un nom de ville fictif et inventez son histoire en 30 secondes.",
+            "🐄 Premier qui voit une vache : 1 point. Troupeau entier : 3 points !",
+            "🌙 Imaginons : si vous deviez vivre dans une des villes traversées aujourd'hui, laquelle choisiriez-vous et pourquoi ?",
+            "🎤 Karaoké surprise ! Chantez la chanson que l'autre vous impose pendant 30 secondes.",
+            "🗺️ Sans regarder le GPS, devinez dans combien de kilomètres est la prochaine sortie.",
+        ];
+
+        let lastChallenge = -1;
+        function rollChallenge() {
+            let idx;
+            do { idx = Math.floor(Math.random() * challenges.length); } while (idx === lastChallenge);
+            lastChallenge = idx;
+            const display = document.getElementById('challenge-display');
+            display.style.opacity = '0';
+            setTimeout(() => {
+                display.textContent = challenges[idx];
+                display.style.opacity = '1';
+            }, 200);
+            display.style.transition = 'opacity 0.2s';
+        }
+
+        // ===== INIT =====
+        window.addEventListener('DOMContentLoaded', () => {
+            loadState();
+        });
+    </script>
+
+</body>
+
+</html>
