@@ -1,0 +1,793 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Mes Outils</title>
+    <style>
+        :root {
+            --background: #0f172a;
+            --card-bg: #1e293b;
+            --border: #334155;
+            --text: #f8fafc;
+            --text-light: #94a3b8;
+            --input-bg: #0f172a;
+            --primary: #6366f1;
+            --primary-hover: #4f46e5;
+            --primary-bg-light: rgba(99, 102, 241, 0.1);
+            --success: #34d399;
+            --success-bg: rgba(52, 211, 153, 0.1);
+            --warning: #fbbf24;
+            --warning-bg: rgba(251, 191, 36, 0.1);
+            --danger: #f87171;
+            --danger-bg-light: rgba(248, 113, 113, 0.1);
+        }
+
+        [data-theme="light"] {
+            --background: #f1f5f9;
+            --card-bg: #ffffff;
+            --border: #cbd5e1;
+            --text: #0f172a;
+            --text-light: #64748b;
+            --input-bg: #ffffff;
+            --primary: #4f46e5;
+            --primary-hover: #3730a3;
+            --primary-bg-light: rgba(79, 70, 229, 0.08);
+            --success: #059669;
+            --success-bg: rgba(5, 150, 105, 0.08);
+            --warning: #d97706;
+            --warning-bg: rgba(217, 119, 6, 0.08);
+            --danger: #dc2626;
+            --danger-bg-light: rgba(220, 38, 38, 0.08);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--background);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        /* ── FOND ANIMÉ ── */
+        .bg-orbs {
+            position: fixed;
+            inset: 0;
+            overflow: hidden;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.12;
+            animation: drift 18s ease-in-out infinite;
+        }
+
+        .orb-1 {
+            width: 500px;
+            height: 500px;
+            background: #6366f1;
+            top: -150px;
+            left: -150px;
+            animation-delay: 0s;
+        }
+
+        .orb-2 {
+            width: 400px;
+            height: 400px;
+            background: #34d399;
+            bottom: -100px;
+            right: -100px;
+            animation-delay: -6s;
+        }
+
+        .orb-3 {
+            width: 300px;
+            height: 300px;
+            background: #fbbf24;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            animation-delay: -12s;
+        }
+
+        @keyframes drift {
+
+            0%,
+            100% {
+                transform: translate(0, 0) scale(1);
+            }
+
+            33% {
+                transform: translate(30px, -40px) scale(1.08);
+            }
+
+            66% {
+                transform: translate(-20px, 20px) scale(0.95);
+            }
+        }
+
+        /* ── LAYOUT PRINCIPAL ── */
+        .page-wrapper {
+            position: relative;
+            z-index: 1;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 28px 20px 40px;
+            max-width: 900px;
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        /* ── HEADER ── */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 48px;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .header-brand {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .brand-logo {
+            width: 56px;
+            height: 56px;
+            flex-shrink: 0;
+        }
+
+        .brand-text h1 {
+            font-size: 1.75rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #6366f1 0%, #34d399 60%, #fbbf24 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1.2;
+            letter-spacing: -0.5px;
+        }
+
+        .brand-text p {
+            font-size: 0.88rem;
+            color: var(--text-light);
+            margin-top: 4px;
+        }
+
+        /* ── THEME SWITCH ── */
+        .theme-switch-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding-top: 6px;
+        }
+
+        .theme-switch {
+            display: inline-block;
+            height: 34px;
+            position: relative;
+            width: 70px;
+        }
+
+        .theme-switch input {
+            display: none;
+        }
+
+        .slider-toggle {
+            background-color: #334155;
+            bottom: 0;
+            cursor: pointer;
+            left: 0;
+            position: absolute;
+            right: 0;
+            top: 0;
+            transition: .4s;
+            border-radius: 34px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 8px;
+            border: 1px solid var(--border);
+        }
+
+        .slider-toggle:before {
+            background-color: #fff;
+            bottom: 3px;
+            content: "";
+            height: 26px;
+            left: 3px;
+            position: absolute;
+            transition: .4s;
+            width: 26px;
+            border-radius: 50%;
+            z-index: 2;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        input:checked+.slider-toggle {
+            background-color: #e2e8f0;
+        }
+
+        input:checked+.slider-toggle:before {
+            transform: translateX(36px);
+            background-color: #4f46e5;
+        }
+
+        .slider-toggle .icon {
+            width: 18px;
+            height: 18px;
+            fill: #94a3b8;
+            transition: fill 0.3s;
+            z-index: 1;
+        }
+
+        input:checked+.slider-toggle .icon-sun {
+            fill: #f59e0b;
+        }
+
+        input:not(:checked)+.slider-toggle .icon-moon {
+            fill: #e2e8f0;
+        }
+
+        /* ── SECTION TITRE CENTRAL ── */
+        .hero-section {
+            text-align: center;
+            margin-bottom: 52px;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--primary-bg-light);
+            border: 1px solid var(--primary);
+            color: var(--primary);
+            font-size: 0.8rem;
+            font-weight: 700;
+            padding: 6px 16px;
+            border-radius: 99px;
+            margin-bottom: 18px;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .hero-title {
+            font-size: 2.4rem;
+            font-weight: 900;
+            line-height: 1.15;
+            margin-bottom: 14px;
+            letter-spacing: -1px;
+        }
+
+        .hero-title span {
+            background: linear-gradient(135deg, #6366f1, #34d399);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-subtitle {
+            font-size: 1rem;
+            color: var(--text-light);
+            max-width: 480px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        /* ── GRILLE DES OUTILS ── */
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+            gap: 20px;
+        }
+
+        /* ── CARD OUTIL ── */
+        .tool-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 28px;
+            text-decoration: none;
+            color: var(--text);
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1),
+                box-shadow 0.25s ease,
+                border-color 0.25s ease;
+            cursor: pointer;
+            box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.25);
+        }
+
+        .tool-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: var(--card-gradient);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            border-radius: 20px;
+        }
+
+        .tool-card:hover {
+            transform: translateY(-6px) scale(1.01);
+        }
+
+        .tool-card:hover::before {
+            opacity: 1;
+        }
+
+        .tool-card:active {
+            transform: translateY(-2px) scale(0.99);
+        }
+
+        .tool-card.budget {
+            --card-gradient: linear-gradient(135deg, rgba(99, 102, 241, 0.06) 0%, rgba(52, 211, 153, 0.04) 100%);
+        }
+
+        .tool-card.budget:hover {
+            border-color: #6366f1;
+            box-shadow: 0 20px 40px -10px rgba(99, 102, 241, 0.3);
+        }
+
+        .tool-card.voyage {
+            --card-gradient: linear-gradient(135deg, rgba(251, 191, 36, 0.06) 0%, rgba(248, 113, 113, 0.04) 100%);
+        }
+
+        .tool-card.voyage:hover {
+            border-color: #fbbf24;
+            box-shadow: 0 20px 40px -10px rgba(251, 191, 36, 0.25);
+        }
+
+        /* Bandeau couleur en haut de la card */
+        .card-top-bar {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            border-radius: 20px 20px 0 0;
+            transition: height 0.3s ease;
+        }
+
+        .tool-card.budget .card-top-bar {
+            background: linear-gradient(90deg, #6366f1, #34d399);
+        }
+
+        .tool-card.voyage .card-top-bar {
+            background: linear-gradient(90deg, #fbbf24, #f87171);
+        }
+
+        .tool-card:hover .card-top-bar {
+            height: 6px;
+        }
+
+        /* Contenu card */
+        .card-inner {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+        }
+
+        .card-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            margin-bottom: 18px;
+            gap: 12px;
+        }
+
+        .card-icon-wrap {
+            width: 64px;
+            height: 64px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            flex-shrink: 0;
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .tool-card:hover .card-icon-wrap {
+            transform: rotate(-6deg) scale(1.12);
+        }
+
+        .tool-card.budget .card-icon-wrap {
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.18), rgba(52, 211, 153, 0.12));
+            border: 1px solid rgba(99, 102, 241, 0.25);
+        }
+
+        .tool-card.voyage .card-icon-wrap {
+            background: linear-gradient(135deg, rgba(251, 191, 36, 0.18), rgba(248, 113, 113, 0.12));
+            border: 1px solid rgba(251, 191, 36, 0.25);
+        }
+
+        .card-tag {
+            font-size: 0.72rem;
+            font-weight: 700;
+            padding: 4px 12px;
+            border-radius: 99px;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            flex-shrink: 0;
+        }
+
+        .tool-card.budget .card-tag {
+            background: rgba(99, 102, 241, 0.12);
+            color: #6366f1;
+            border: 1px solid rgba(99, 102, 241, 0.3);
+        }
+
+        .tool-card.voyage .card-tag {
+            background: rgba(251, 191, 36, 0.12);
+            color: #fbbf24;
+            border: 1px solid rgba(251, 191, 36, 0.3);
+        }
+
+        [data-theme="light"] .tool-card.voyage .card-tag {
+            color: #d97706;
+        }
+
+        .card-title-text {
+            font-size: 1.3rem;
+            font-weight: 800;
+            margin-bottom: 8px;
+            letter-spacing: -0.3px;
+        }
+
+        .card-desc {
+            font-size: 0.88rem;
+            color: var(--text-light);
+            line-height: 1.6;
+            flex: 1;
+            margin-bottom: 22px;
+        }
+
+        /* Features list */
+        .card-features {
+            display: flex;
+            flex-direction: column;
+            gap: 7px;
+            margin-bottom: 24px;
+        }
+
+        .feature-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.83rem;
+            color: var(--text-light);
+        }
+
+        .feature-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .tool-card.budget .feature-dot {
+            background: #6366f1;
+        }
+
+        .tool-card.voyage .feature-dot {
+            background: #fbbf24;
+        }
+
+        /* CTA bouton */
+        .card-cta {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 13px 18px;
+            border-radius: 12px;
+            font-size: 0.9rem;
+            font-weight: 700;
+            transition: all 0.2s;
+            border: none;
+            cursor: pointer;
+            text-decoration: none;
+            color: #fff;
+        }
+
+        .tool-card.budget .card-cta {
+            background: linear-gradient(135deg, #6366f1, #4f46e5);
+            box-shadow: 0 4px 14px rgba(99, 102, 241, 0.35);
+        }
+
+        .tool-card.budget:hover .card-cta {
+            box-shadow: 0 6px 20px rgba(99, 102, 241, 0.5);
+        }
+
+        .tool-card.voyage .card-cta {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            box-shadow: 0 4px 14px rgba(251, 191, 36, 0.35);
+        }
+
+        .tool-card.voyage:hover .card-cta {
+            box-shadow: 0 6px 20px rgba(251, 191, 36, 0.5);
+        }
+
+        .cta-arrow {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 28px;
+            height: 28px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+            font-size: 1rem;
+        }
+
+        .tool-card:hover .cta-arrow {
+            transform: translateX(5px);
+        }
+
+        /* ── FOOTER ── */
+        footer {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+            padding: 28px 20px 24px;
+            font-size: 0.8rem;
+            color: var(--text-light);
+            border-top: 1px solid var(--border);
+            margin-top: auto;
+        }
+
+        /* ── RESPONSIVE ── */
+        @media (max-width: 600px) {
+            .page-wrapper {
+                padding: 20px 14px 32px;
+            }
+
+            header {
+                margin-bottom: 32px;
+            }
+
+            .brand-text h1 {
+                font-size: 1.35rem;
+            }
+
+            .hero-section {
+                margin-bottom: 36px;
+            }
+
+            .hero-title {
+                font-size: 1.7rem;
+            }
+
+            .hero-subtitle {
+                font-size: 0.88rem;
+            }
+
+            .tools-grid {
+                grid-template-columns: 1fr;
+                gap: 16px;
+            }
+
+            .tool-card {
+                padding: 22px 20px;
+            }
+
+            .card-icon-wrap {
+                width: 54px;
+                height: 54px;
+                font-size: 1.7rem;
+            }
+
+            .card-title-text {
+                font-size: 1.15rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Orbes de fond -->
+    <div class="bg-orbs">
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+        <div class="orb orb-3"></div>
+    </div>
+
+    <div class="page-wrapper">
+
+        <!-- ═══════════ HEADER ═══════════ -->
+        <header>
+            <div class="header-brand">
+                <!-- Logo SVG -->
+                <svg class="brand-logo" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                        <linearGradient id="lg1" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" stop-color="#6366f1" />
+                            <stop offset="100%" stop-color="#34d399" />
+                        </linearGradient>
+                        <linearGradient id="lg2" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" stop-color="#fbbf24" />
+                            <stop offset="100%" stop-color="#f87171" />
+                        </linearGradient>
+                    </defs>
+                    <!-- Cercle extérieur -->
+                    <circle cx="50" cy="50" r="46" stroke="url(#lg1)" stroke-width="2" stroke-dasharray="7 3"
+                        opacity="0.4" />
+                    <!-- Fond -->
+                    <circle cx="50" cy="50" r="42" fill="#1e293b" />
+                    <!-- Avion stylisé -->
+                    <path d="M22 58 L68 38 L62 50 L68 62 Z" fill="url(#lg1)" opacity="0.9" />
+                    <path d="M52 44 L57 34 L62 37 L59 47 Z" fill="url(#lg1)" opacity="0.55" />
+                    <path d="M52 56 L55 67 L60 64 L59 53 Z" fill="url(#lg1)" opacity="0.55" />
+                    <!-- Étoile décorative -->
+                    <circle cx="32" cy="34" r="4" fill="url(#lg2)" opacity="0.8" />
+                    <circle cx="72" cy="68" r="3" fill="url(#lg2)" opacity="0.6" />
+                    <circle cx="78" cy="30" r="2" fill="#34d399" opacity="0.5" />
+                </svg>
+                <div class="brand-text">
+                    <h1>Mes Outils Voyage</h1>
+                    <p>Tout ce qu'il faut pour partir serein ✈️</p>
+                </div>
+            </div>
+
+            <!-- Switch thème -->
+            <div class="theme-switch-wrapper">
+                <label class="theme-switch" for="cb-theme">
+                    <input type="checkbox" id="cb-theme" onchange="toggleTheme(this)" />
+                    <div class="slider-toggle">
+                        <svg class="icon icon-sun" viewBox="0 0 24 24">
+                            <path
+                                d="M12 7c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zM2 13h2c.55 0 1-.45 1-1s-.45-1-1-1H2c-.55 0-1 .45-1 1s.45 1 1 1zm18 0h2c.55 0 1-.45 1-1s-.45-1-1-1h-2c-.55 0-1 .45-1 1s.45 1 1 1zM11 2v2c0 .55.45 1 1 1s1-.45 1-1V2c0-.55-.45-1-1-1s-1 .45-1 1zm0 18v2c0 .55.45 1 1 1s1-.45 1-1v-2c0-.55-.45-1-1-1s-1 .45-1 1zM5.99 4.58c-.39-.39-1.03-.39-1.41 0s-.39 1.03 0 1.41l1.06 1.06c.39.39 1.03.39 1.41 0s.39-1.03 0-1.41L5.99 4.58zm12.37 12.37c-.39-.39-1.03-.39-1.41 0s-.39 1.03 0 1.41l1.06 1.06c.39.39 1.03.39 1.41 0 .39-.39 0-1.03 0-1.41l-1.06-1.06zm1.06-12.37c-.39-.39-1.03-.39-1.41 0l-1.06 1.06c-.39.39-.39 1.03 0 1.41s1.03.39 1.41 0l1.06-1.06c.39-.39.39-1.03 0-1.41zm-12.37 12.37c-.39-.39-1.03-.39-1.41 0l-1.06 1.06c-.39.39-.39 1.03 0 1.41s1.03.39 1.41 0l1.06-1.06c.39-.39.39-1.03 0-1.41z" />
+                        </svg>
+                        <svg class="icon icon-moon" viewBox="0 0 24 24" fill="currentColor">
+                            <circle cx="12" cy="12" r="8" />
+                            <circle cx="9" cy="9" r="1.5" opacity="0.3" fill="#000" />
+                            <circle cx="14" cy="15" r="2" opacity="0.3" fill="#000" />
+                            <circle cx="15" cy="10" r="1" opacity="0.3" fill="#000" />
+                        </svg>
+                    </div>
+                </label>
+            </div>
+        </header>
+
+        <!-- ═══════════ HERO ═══════════ -->
+        <section class="hero-section">
+            <div class="hero-badge">
+                <span>🚀</span> Vos outils
+            </div>
+            <h2 class="hero-title">
+                Tout prévoir,<br><span>rien oublier.</span>
+            </h2>
+            <p class="hero-subtitle">
+                Gérez votre budget en couple, préparez votre valise de façon interactive et ludique, depuis un seul endroit.
+            </p>
+        </section>
+
+        <!-- ═══════════ GRILLE DES OUTILS ═══════════ -->
+        <div class="tools-grid">
+
+            <!-- ── CARD BUDGET ── -->
+            <a href="Budget/budget.html" class="tool-card budget">
+                <div class="card-top-bar"></div>
+                <div class="card-inner">
+                    <div class="card-header">
+                        <div class="card-icon-wrap">💰</div>
+                        <span class="card-tag">Finances</span>
+                    </div>
+                    <div class="card-title-text">Calculateur de Budget</div>
+                    <p class="card-desc">
+                        Gérer les charges communes, répartir les dépenses au prorata des revenus ou en 50/50, et
+                        visualiser le reste à vivre en temps réel.
+                    </p>
+                    <div class="card-features">
+                        <div class="feature-item">
+                            <div class="feature-dot"></div>
+                            Répartition prorata, 50/50 ou personnalisée
+                        </div>
+                        <div class="feature-item">
+                            <div class="feature-dot"></div>
+                            Calcul automatique de l'équilibrage
+                        </div>
+                        <div class="feature-item">
+                            <div class="feature-dot"></div>
+                            Reste à vivre net en temps réel
+                        </div>
+                    </div>
+                    <div class="card-cta">
+                        <span>Ouvrir le calculateur</span>
+                        <span class="cta-arrow">→</span>
+                    </div>
+                </div>
+            </a>
+
+            <!-- ── CARD PRÉPARATION SAC ── -->
+            <a href="Voyage/sac.html" class="tool-card voyage">
+                <div class="card-top-bar"></div>
+                <div class="card-inner">
+                    <div class="card-header">
+                        <div class="card-icon-wrap">🧳</div>
+                        <span class="card-tag">Voyage</span>
+                    </div>
+                    <div class="card-title-text">Préparation du Sac</div>
+                    <p class="card-desc">
+                        Préparez votre valise de façon interactive et gamifiée. Cochez vos affaires, débloquez des
+                        médailles et partez avec la certitude de n'avoir rien oublié !
+                    </p>
+                    <div class="card-features">
+                        <div class="feature-item">
+                            <div class="feature-dot"></div>
+                            Par catégories : valise, sac, documents…
+                        </div>
+                        <div class="feature-item">
+                            <div class="feature-dot"></div>
+                            Progression avec médailles
+                        </div>
+                        <div class="feature-item">
+                            <div class="feature-dot"></div>
+                            Listes personnalisables à l'infini
+                        </div>
+                    </div>
+                    <div class="card-cta">
+                        <span>Préparer mon voyage</span>
+                        <span class="cta-arrow">→</span>
+                    </div>
+                </div>
+            </a>
+
+        </div>
+
+    </div>
+
+    <!-- ═══════════ FOOTER ═══════════ -->
+    <footer>
+        Made with ❤️ par EchecsEtMaths
+    </footer>
+
+    <script>
+        // ── THÈME ──
+        function toggleTheme(cb) {
+            if (cb.checked) {
+                document.documentElement.setAttribute('data-theme', 'light');
+                localStorage.setItem('menu_theme', 'light');
+            } else {
+                document.documentElement.removeAttribute('data-theme');
+                localStorage.setItem('menu_theme', 'dark');
+            }
+        }
+
+        // ── INIT ──
+        window.addEventListener('DOMContentLoaded', () => {
+            const saved = localStorage.getItem('menu_theme');
+            const cb = document.getElementById('cb-theme');
+            if (saved === 'light') {
+                document.documentElement.setAttribute('data-theme', 'light');
+                cb.checked = true;
+            }
+        });
+    </script>
+
+</body>
+
+</html>
