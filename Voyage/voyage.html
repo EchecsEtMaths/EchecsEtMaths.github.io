@@ -35,11 +35,12 @@
             color: var(--text-dark);
         }
 
-        /* ===== TABS ===== */
+        /* ===== TABS & BUTTONS ===== */
         .tabs-container {
             display: flex;
             justify-content: center;
-            gap: 0;
+            align-items: center;
+            gap: 10px;
             padding: 20px 20px 0;
             position: sticky;
             top: 0;
@@ -47,7 +48,8 @@
             background: linear-gradient(to bottom, #1a0f00 80%, transparent);
         }
 
-        .tab-btn {
+        .tab-btn,
+        .btn-home {
             padding: 12px 24px;
             font-family: 'Georgia', serif;
             font-size: 0.95rem;
@@ -56,16 +58,28 @@
             border: 2px solid var(--gold);
             background: linear-gradient(135deg, #3d2000, #1a0f00);
             color: var(--gold);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
             letter-spacing: 1px;
             transition: all 0.3s;
         }
 
-        .tab-btn:first-child {
+        .btn-home {
+            border-radius: 8px;
+        }
+
+        .tabs-group {
+            display: flex;
+        }
+
+        .tabs-group .tab-btn:first-child {
             border-radius: 8px 0 0 8px;
             border-right: 1px solid var(--gold);
         }
 
-        .tab-btn:last-child {
+        .tabs-group .tab-btn:last-child {
             border-radius: 0 8px 8px 0;
             border-left: 1px solid var(--gold);
         }
@@ -75,8 +89,11 @@
             color: var(--dark-brown);
         }
 
-        .tab-btn:hover:not(.active) {
+        .tab-btn:hover:not(.active),
+        .btn-home:hover {
             background: linear-gradient(135deg, #5c3300, #2d1a00);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px var(--shadow);
         }
 
         .tab-content {
@@ -756,6 +773,30 @@
         }
 
         @media (max-width: 600px) {
+            .tabs-container {
+                flex-direction: column;
+                gap: 8px;
+                padding-bottom: 10px;
+            }
+
+            .tabs-group {
+                width: 100%;
+            }
+
+            .tab-btn {
+                flex: 1;
+                text-align: center;
+                padding: 10px;
+                font-size: 0.85rem;
+            }
+
+            .btn-home {
+                width: 100%;
+                justify-content: center;
+                padding: 10px;
+                font-size: 0.85rem;
+            }
+
             .day-header {
                 padding: 12px 15px;
             }
@@ -775,10 +816,23 @@
 
 <body>
 
-    <!-- TABS -->
+    <!-- TABS & ACTIONS -->
     <div class="tabs-container">
-        <button class="tab-btn active" onclick="switchTab('roadmap')">🗺️ La Quête</button>
-        <button class="tab-btn" onclick="switchTab('games')">⚔️ Mini-Jeux</button>
+        <!-- Bouton Retour Accueil -->
+        <a href="../menu.html" class="btn-home" title="Retour à l'accueil">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                stroke-linecap="round" stroke-linejoin="round">
+                <path d="M3 9.5L12 3l9 6.5V20a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V9.5z" />
+                <polyline points="9 21 9 13 15 13 15 21" />
+            </svg>
+            Accueil
+        </a>
+
+        <!-- Sélecteur d'onglets -->
+        <div class="tabs-group">
+            <button class="tab-btn active" onclick="switchTab('roadmap')">🗺️ La Quête</button>
+            <button class="tab-btn" onclick="switchTab('games')">⚔️ Mini-Jeux</button>
+        </div>
     </div>
 
     <!-- ===== ONGLET ROADMAP ===== -->
