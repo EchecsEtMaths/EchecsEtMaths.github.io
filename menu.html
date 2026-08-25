@@ -22,6 +22,9 @@
             --warning-bg: rgba(251, 191, 36, 0.1);
             --danger: #f87171;
             --danger-bg-light: rgba(248, 113, 113, 0.1);
+            /* Nouvelle couleur pour l'aventure/quête (turquoise) */
+            --adventure: #06b6d4;
+            --adventure-bg-light: rgba(6, 182, 212, 0.1);
         }
 
         [data-theme="light"] {
@@ -40,6 +43,9 @@
             --warning-bg: rgba(217, 119, 6, 0.08);
             --danger: #dc2626;
             --danger-bg-light: rgba(220, 38, 38, 0.08);
+            /* Version claire */
+            --adventure: #0891b2;
+            --adventure-bg-light: rgba(8, 145, 178, 0.08);
         }
 
         * {
@@ -127,7 +133,8 @@
             display: flex;
             flex-direction: column;
             padding: 28px 20px 40px;
-            max-width: 900px;
+            max-width: 1100px;
+            /* Légèrement augmenté pour accueillir 3 colonnes de façon fluide */
             width: 100%;
             margin: 0 auto;
         }
@@ -294,7 +301,7 @@
         /* ── GRILLE DES OUTILS ── */
         .tools-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
             gap: 20px;
         }
 
@@ -340,6 +347,7 @@
             transform: translateY(-2px) scale(0.99);
         }
 
+        /* Thème Budget */
         .tool-card.budget {
             --card-gradient: linear-gradient(135deg, rgba(99, 102, 241, 0.06) 0%, rgba(52, 211, 153, 0.04) 100%);
         }
@@ -349,6 +357,7 @@
             box-shadow: 0 20px 40px -10px rgba(99, 102, 241, 0.3);
         }
 
+        /* Thème Voyage */
         .tool-card.voyage {
             --card-gradient: linear-gradient(135deg, rgba(251, 191, 36, 0.06) 0%, rgba(248, 113, 113, 0.04) 100%);
         }
@@ -356,6 +365,16 @@
         .tool-card.voyage:hover {
             border-color: #fbbf24;
             box-shadow: 0 20px 40px -10px rgba(251, 191, 36, 0.25);
+        }
+
+        /* Thème Aventure (Nouveau) */
+        .tool-card.aventure {
+            --card-gradient: linear-gradient(135deg, rgba(6, 182, 212, 0.06) 0%, rgba(52, 211, 153, 0.04) 100%);
+        }
+
+        .tool-card.aventure:hover {
+            border-color: var(--adventure);
+            box-shadow: 0 20px 40px -10px rgba(6, 182, 212, 0.3);
         }
 
         /* Bandeau couleur en haut de la card */
@@ -375,6 +394,10 @@
 
         .tool-card.voyage .card-top-bar {
             background: linear-gradient(90deg, #fbbf24, #f87171);
+        }
+
+        .tool-card.aventure .card-top-bar {
+            background: linear-gradient(90deg, var(--adventure), #34d399);
         }
 
         .tool-card:hover .card-top-bar {
@@ -424,6 +447,11 @@
             border: 1px solid rgba(251, 191, 36, 0.25);
         }
 
+        .tool-card.aventure .card-icon-wrap {
+            background: linear-gradient(135deg, rgba(6, 182, 212, 0.18), rgba(52, 211, 153, 0.12));
+            border: 1px solid rgba(6, 182, 212, 0.25);
+        }
+
         .card-tag {
             font-size: 0.72rem;
             font-weight: 700;
@@ -444,6 +472,12 @@
             background: rgba(251, 191, 36, 0.12);
             color: #fbbf24;
             border: 1px solid rgba(251, 191, 36, 0.3);
+        }
+
+        .tool-card.aventure .card-tag {
+            background: rgba(6, 182, 212, 0.12);
+            color: var(--adventure);
+            border: 1px solid rgba(6, 182, 212, 0.3);
         }
 
         [data-theme="light"] .tool-card.voyage .card-tag {
@@ -496,6 +530,10 @@
             background: #fbbf24;
         }
 
+        .tool-card.aventure .feature-dot {
+            background: var(--adventure);
+        }
+
         /* CTA bouton */
         .card-cta {
             display: flex;
@@ -528,6 +566,15 @@
 
         .tool-card.voyage:hover .card-cta {
             box-shadow: 0 6px 20px rgba(251, 191, 36, 0.5);
+        }
+
+        .tool-card.aventure .card-cta {
+            background: linear-gradient(135deg, #06b6d4, #0891b2);
+            box-shadow: 0 4px 14px rgba(6, 182, 212, 0.35);
+        }
+
+        .tool-card.aventure:hover .card-cta {
+            box-shadow: 0 6px 20px rgba(6, 182, 212, 0.5);
         }
 
         .cta-arrow {
@@ -678,10 +725,12 @@
                 <span>🚀</span> Vos outils
             </div>
             <h2 class="hero-title">
-                Tout prévoir,<br><span>rien oublier.</span>
+                Tout prévoir,
+                <span>rien oublier.</span>
             </h2>
             <p class="hero-subtitle">
-                Gérez votre budget en couple, préparez votre valise de façon interactive et ludique, depuis un seul endroit.
+                Gérez votre budget en couple, préparez votre valise et suivez vos étapes d'aventure depuis un seul
+                endroit.
             </p>
         </section>
 
@@ -751,6 +800,40 @@
                     </div>
                     <div class="card-cta">
                         <span>Préparer mon voyage</span>
+                        <span class="cta-arrow">→</span>
+                    </div>
+                </div>
+            </a>
+
+            <!-- ── CARD QUÊTE VOYAGE (NOUVELLE) ── -->
+            <a href="Voyage/voyage.html" class="tool-card aventure">
+                <div class="card-top-bar"></div>
+                <div class="card-inner">
+                    <div class="card-header">
+                        <div class="card-icon-wrap">🗺️</div>
+                        <span class="card-tag">Aventure</span>
+                    </div>
+                    <div class="card-title-text">Quête Troyes-Reims</div>
+                    <p class="card-desc">
+                        Suivez en temps réel les étapes, défis et accomplissements de notre incroyable périple de Troyes
+                        à Reims en 2026.
+                    </p>
+                    <div class="card-features">
+                        <div class="feature-item">
+                            <div class="feature-dot"></div>
+                            Suivi d'itinéraire et d'étapes clé
+                        </div>
+                        <div class="feature-item">
+                            <div class="feature-dot"></div>
+                            Objectifs et quêtes secondaires
+                        </div>
+                        <div class="feature-item">
+                            <div class="feature-dot"></div>
+                            Souvenirs & roadbook de voyage
+                        </div>
+                    </div>
+                    <div class="card-cta">
+                        <span>Lancer la quête 2026</span>
                         <span class="cta-arrow">→</span>
                     </div>
                 </div>
