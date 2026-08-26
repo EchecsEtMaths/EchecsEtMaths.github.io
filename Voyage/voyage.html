@@ -79,6 +79,11 @@
             border-right: 1px solid var(--gold);
         }
 
+        .tabs-group .tab-btn:nth-child(2) {
+            border-right: 1px solid var(--gold);
+            border-left: 1px solid var(--gold);
+        }
+
         .tabs-group .tab-btn:last-child {
             border-radius: 0 8px 8px 0;
             border-left: 1px solid var(--gold);
@@ -763,6 +768,97 @@
             cursor: pointer;
         }
 
+        /* ===== ONGLETS REVISION ===== */
+        .revision-card {
+            background: linear-gradient(135deg, rgba(244, 228, 188, 0.95), rgba(232, 213, 163, 0.95));
+            border: 3px solid #8B4513;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+        }
+
+        .revision-type {
+            font-size: 0.85rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--dark-gold);
+            margin-bottom: 10px;
+        }
+
+        .question-box {
+            font-size: 1.15rem;
+            font-weight: bold;
+            color: var(--dark-brown);
+            line-height: 1.5;
+            margin-bottom: 20px;
+            background: rgba(255, 255, 255, 0.35);
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid var(--brown);
+        }
+
+        .options-list {
+            margin-bottom: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .option-item {
+            background: rgba(255, 255, 255, 0.5);
+            padding: 10px 15px;
+            border-radius: 6px;
+            border: 1px solid rgba(139, 69, 19, 0.2);
+            color: var(--text-dark);
+            font-size: 0.95rem;
+        }
+
+        .answer-box {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: rgba(45, 80, 22, 0.15);
+            border: 1px solid rgba(45, 80, 22, 0.4);
+            border-radius: 8px;
+            color: var(--completed);
+            font-size: 1rem;
+            line-height: 1.5;
+            animation: fadeIn 0.4s ease-in-out;
+        }
+
+        .answer-box.show {
+            display: block;
+        }
+
+        .btn-revision-group {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+
+        .btn-rev {
+            background: linear-gradient(135deg, var(--brown), var(--dark-brown));
+            color: var(--gold);
+            border: 2px solid var(--gold);
+            border-radius: 8px;
+            padding: 10px 20px;
+            font-family: 'Georgia', serif;
+            font-size: 0.95rem;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        .btn-rev:hover {
+            color: var(--dark-brown);
+            background: linear-gradient(135deg, var(--gold), var(--dark-gold));
+            transform: translateY(-2px);
+        }
+
         .stars-decoration {
             text-align: center;
             color: var(--gold);
@@ -832,6 +928,7 @@
         <div class="tabs-group">
             <button class="tab-btn active" onclick="switchTab('roadmap')">🗺️ La Quête</button>
             <button class="tab-btn" onclick="switchTab('games')">⚔️ Mini-Jeux</button>
+            <button class="tab-btn" onclick="switchTab('revision')">📖 Révision</button>
         </div>
     </div>
 
@@ -862,7 +959,7 @@
                 <div class="day-header">
                     <div class="day-icon">🌅</div>
                     <div class="day-title">
-                        <h2>Jour 1 — Vendredi 28 Août</h2>
+                        <h2>Jour 1 — Vendredi 8 Août</h2>
                         <p>Mérignac → Châteauroux · Le Grand Départ</p>
                     </div>
                     <div class="day-xp">+4 XP</div>
@@ -1448,6 +1545,34 @@
         </div>
     </div>
 
+    <!-- ===== ONGLET REVISION ===== -->
+    <div id="tab-revision" class="tab-content">
+        <div class="games-container">
+            <div class="games-header">
+                <h2>📚 Le Scriptorium des Savoirs 📚</h2>
+                <p>Révision du Management de la Qualité pour la route **[1]** </p>
+            </div>
+
+            <div class="revision-card">
+                <div class="revision-type" id="rev-type">Type de question</div>
+                <div class="question-box" id="rev-question">Appuyez sur le bouton pour piocher une question de révision
+                    !</div>
+
+                <div class="options-list" id="rev-options" style="display:none;"></div>
+
+                <div class="answer-box" id="rev-answer">
+                    <strong>💡 Réponse :</strong> <span id="rev-answer-text">La réponse apparaîtra ici.</span>
+                </div>
+
+                <div class="btn-revision-group">
+                    <button class="btn-rev" onclick="drawRevision()">🎲 Poser une question</button>
+                    <button class="btn-rev" id="btn-reveal" onclick="revealAnswer()" style="display:none;">👁️ Révéler
+                        la Réponse</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Toast notification -->
     <div class="toast" id="toast">
         <span class="toast-emoji" id="toast-emoji">🎉</span>
@@ -1505,6 +1630,152 @@
             'step-5-4': { lat: 44.8378, lon: -0.6472 }
         };
 
+        // ===== BASE DE DONNÉES DE RÉVISION (MANAGEMENT QUALITÉ) =====
+        const revisionDatabase = [
+            // --- Part I: Flashcards ---
+            { type: "Flashcard", q: "Quels sont les 7 principes de management de la qualité (ISO 9001:2015) ?", a: "1. Orientation client ; 2. Leadership ; 3. Implication du personnel ; 4. Approche processus ; 5. Amélioration continue ; 6. Décision fondée sur des preuves ; 7. Management des relations avec les parties intéressées." },
+            { type: "Flashcard", q: "Qu'est-ce que la structure HLS (High Level Structure) ?", a: "Une structure commune à 10 chapitres adoptée par toutes les normes ISO de systèmes de management (ISO 9001, 14001, 45001) pour faciliter leur intégration au sein d'un SMI." },
+            { type: "Flashcard", q: "Quels sont les 4 grands types de processus selon la cartographie ISO ?", a: "1. Processus de Direction / Management (stratégie, politique) ; 2. Processus Réalisation / Opérationnels (métier, valeur ajoutée) ; 3. Processus Support / Soutien (RH, IT, maintenance) ; 4. Processus de Mesure / Amélioration (audits, contrôle)." },
+            { type: "Flashcard", q: "Quelle est la différence entre une approche produit et une approche processus ?", a: "Produit : Contrôle la conformité du résultat final à la fin de la chaîne (réactif). Processus : Maîtrise l'enchaînement des activités en amont pour garantir la qualité dès le premier coup (proactif)." },
+            { type: "Flashcard", q: "À quoi correspondent les normes EN 9100, IATF 16949 et ISO 13485 ?", a: "Ce sont des déclinaisons sectorielles de l'ISO 9001 : EN 9100 : Aéronautique, Spatial et Défense ; IATF 16949 : Industrie Automobile ; ISO 13485 : Dispositifs Médicaux." },
+            { type: "Flashcard", q: "Qu'est-ce qu'un SMI (Système de Management Intégré) et quelles normes associe-t-il couramment ?", a: "Un système regroupant la Qualité, la Sécurité et l'Environnement (QSE) : ISO 9001 (Qualité), ISO 14001 (Environnement), et ISO 45001 (Santé et Sécurité au Travail)." },
+            { type: "Flashcard", q: "Quelle est la durée d'un cycle de certification ISO 9001 ?", a: "3 ans (Certification initiale l'année 1, suivie d'audits de surveillance aux années 2 et 3, puis renouvellement)." },
+            { type: "Flashcard", q: "Quels sont les apports majeurs de W. Edwards Deming ?", a: "La roue PDCA (Plan-Do-Check-Act) et les 14 points de management pour transformer l'organisation industrielle." },
+            { type: "Flashcard", q: "Qu'est-ce que la Trilogie de Juran ?", a: "L'organisation de la qualité selon 3 axes : 1. Planification de la qualité ; 2. Contrôle de la qualité ; 3. Amélioration de la qualité." },
+            { type: "Flashcard", q: "Quelle est la définition du TQC (Total Quality Control) selon Feigenbaum ?", a: "Une approche systémique où la qualité n'est pas l'affaire du seul service qualité, mais implique tous les départements et l'ensemble du personnel." },
+            { type: "Flashcard", q: "Qu'apporte Genichi Taguchi au concept de Qualité ?", a: "La fonction de perte de qualité : toute déviation par rapport à la valeur cible exacte génère un coût/une perte financière pour la société, même si le produit reste dans les limites de tolérance." },
+            { type: "Flashcard", q: "Quelle est la différence fondamentale entre l'Assurance Qualité et le TQM ?", a: "Assurance Qualité : Donner confiance aux clients par le respect strict de procédures et conformités. TQM (Total Quality Management) : Philosophie globale visant l'excellence opérationnelle, le bien-être, l'innovation et la satisfaction de toutes les parties prenantes." },
+            { type: "Flashcard", q: "À quoi sert un QQOQCCP ?", a: "À décrire et cadrer un problème de manière factuelle et exhaustive : Qui, Quoi, Où, Quand, Comment, Combien, Pourquoi." },
+            { type: "Flashcard", q: "Quelle est la règle du 80/20 du Diagramme de Pareto ?", a: "80 % des effets (problèmes/coûts) sont produits par 20 % des causes. Permet de déterminer les priorités d'action." },
+            { type: "Flashcard", q: "Quelles sont les familles de causes du Diagramme d'Ishikawa (5M) ?", a: "1. Main-d'œuvre ; 2. Méthode ; 3. Matériel ; 4. Matière ; 5. Milieu (avec possibilité d'ajouter Mesure et Management pour les 7M)." },
+            { type: "Flashcard", q: "Quel est l'objectif de la méthode des 5 Pourquoi ?", a: "Identifier la cause racine d'un dysfonctionnement en posant la question « Pourquoi ? » au moins 5 fois de suite face au problème constaté." },
+            { type: "Flashcard", q: "Qu'est-ce qu'un Poka-Yoke ?", a: "Un système détrompeur (mécanique, électronique ou visuel) empêchant physiquement l'apparition d'une erreur humaine." },
+            { type: "Flashcard", q: "Quels sont les 5 étapes de la méthode 5S ?", a: "1. Seiri (Débarrasser / Trier) ; 2. Seiton (Ranger) ; 3. Seiso (Nettoyer) ; 4. Seiketsu (Standardiser) ; 5. Shitsuke (Respecter / Suivre)." },
+            { type: "Flashcard", q: "Que signifie AMDEC et quelle est la formule de l'IPR ?", a: "Analyse des Modes de Défaillance, de leurs Effets et de leur Criticité. Formule de l'IPR (Indice de Priorité du Risque) = Gravité (G) × Occurrence (O) × Détectabilité (D)." },
+            { type: "Flashcard", q: "Comment agir spécifiquement sur chacun des facteurs G, O, D d'une AMDEC ?", a: "Réduire G : Modifier la conception du produit/process. Réduire O : Poser un détrompeur (Poka-Yoke) ou fiabiliser l'équipement. Réduire D : Améliorer les moyens de contrôle ou augmenter les fréquences d'inspection." },
+            { type: "Flashcard", q: "Qu'est-ce que la maîtrise statistique des procédés (MSP/SPC) ?", a: "Le suivi en temps réel de la variabilité d'un procédé à l'aide de cartes de contrôle pour distinguer les causes communes (naturelles) des causes spéciales (dérives)." },
+            { type: "Flashcard", q: "Quelle est la différence entre Cp et Cpk ?", a: "Cp (Capabilité potentielle) : Mesure la largeur de la dispersion par rapport à l'intervalle de tolérance (Cp = IT / 6σ). Cpk (Capabilité réelle) : Mesure si le procédé est correctement centré sur la cible." },
+            { type: "Flashcard", q: "Que signifie une situation où Cp = 2,0 et Cpk = 0,5 ?", a: "Le procédé est physiquement très précis (dispersion très faible), mais totalement hors-centre par rapport à la cible réglée." },
+            { type: "Flashcard", q: "En métrologie, quelle est la différence entre Étalonnage et Ajustage ?", a: "Étalonnage : Compare les valeurs de l'appareil à un étalon sans toucher à la machine (mesure de l'écart). Ajustage : Intervention physique/réglage de l'appareil pour éliminer l'écart mesuré." },
+            { type: "Flashcard", q: "Qu'est-ce qu'une Vérification en métrologie ?", a: "L'action de comparer les erreurs d'un appareil aux Écarts Maximaux Tolérés (EMT) pour statuer si l'appareil est « Conforme » ou « Non-Conforme »." },
+            { type: "Flashcard", q: "Qu'est-ce que le R&R (Repeatability & Reproducibility) ?", a: "Une étude statistique évaluant la part de variabilité apportée par l'instrument de mesure (Répétabilité) et par les opérateurs (Reproductibilité)." },
+            { type: "Flashcard", q: "Qu'est-ce qu'un MUDA ? Citez les 7 Mudas traditionnels.", a: "Tout gaspillage sans valeur ajoutée : 1. Surproduction ; 2. Attentes ; 3. Transports inutiles ; 4. Processus / Sur-qualité ; 5. Stocks excessifs ; 6. Mouvements inutiles ; 7. Non-conformités / Retouches." },
+            { type: "Flashcard", q: "Qu'est-ce que le VSM (Value Stream Mapping) ?", a: "Une cartographie de la chaîne de valeur mesurant le temps à valeur ajoutée (TVA) et de non-valeur ajoutée (TNVA) pour réduire le Lead Time total." },
+            { type: "Flashcard", q: "Quelle est la différence entre un flux poussé et un flux tiré ?", a: "Flux poussé : On produit selon un planning prévisionnel en créant du stock en aval. Flux tiré (JAT/Kanban) : La production est déclenchée uniquement par la consommation réelle du poste client." },
+            { type: "Flashcard", q: "Qu'est-ce que le Kanban ?", a: "Une étiquette servant de signal visuel d'autorisation de production ou de réapprovisionnement en flux tiré." },
+            { type: "Flashcard", q: "Qu'est-ce que la méthode SMED ?", a: "Single Minute Exchange of Die : Technique visant à réduire le temps de changement de série à moins de 10 minutes." },
+            { type: "Flashcard", q: "Que signifie le concept Six Sigma (6σ) en termes de performance ?", a: "Le procédé génère au maximum 3,4 défauts par million d'opportunités (DPMO) ou 99,99966 % de conformité." },
+            { type: "Flashcard", q: "Quelles sont les 5 étapes du cycle DMAIC ?", a: "1. Définir ; 2. Mesurer ; 3. Analyser ; 4. Innover / Améliorer (Improve) ; 5. Contrôler." },
+            { type: "Flashcard", q: "Quels sont les 4 quadrants de la matrice RACI ?", a: "R (Responsible/Réalisateur) ; A (Accountable/Approbateur-Responsable final) ; C (Consulted/Consulté) ; I (Informed/Informé)." },
+            { type: "Flashcard", q: "Quelles sont les 4 perspectives d'un Balanced Scorecard ?", a: "1. Axe Financier ; 2. Axe Client ; 3. Axe Processus Internes ; 4. Axe Apprentissage Organisationnel (RH, Innovation, SI)." },
+            { type: "Flashcard", q: "Quelle est la règle du 1-10-100 concernant les Coûts de Non-Qualité ?", a: "1 € investi en prévention ; 10 € pour corriger en usine (détection interne) ; 100 € subis si le défaut atteint le client (détection externe)." },
+            { type: "Flashcard", q: "Quels sont les 4 éléments qui composent le Coût Obtention de la Qualité (COQ) ?", a: "COQ = Coûts de Prévention + Coûts de Détection + Anomalies Internes + Anomalies Externes." },
+            { type: "Flashcard", q: "Comment se divise le Modèle de Kano sur la satisfaction client ?", a: "1. Besoins basiques (Must-be) ; 2. Besoins proportionnels ; 3. Besoins d'attraction (Delighters)." },
+            { type: "Flashcard", q: "Quelle est la formule de calcul du NPS (Net Promoter Score) ?", a: "NPS = % Promoteurs (9-10) - % Détracteurs (0-6)." },
+            { type: "Flashcard", q: "Qu'est-ce qu'une démarche RSE selon la norme ISO 26000 ?", a: "L'intégration volontaire par les entreprises des préoccupations sociales, environnementales et éthiques dans leurs activités." },
+            { type: "Flashcard", q: "Quelle est la différence entre une action corrective et une action préventive ?", a: "Corrective : Élimine la cause d'une non-conformité déjà survenue. Préventive : Élimine la cause d'une non-conformité potentielle qui ne s'est pas encore produite." },
+            { type: "Flashcard", q: "Qu'est-ce qu'un Gemba Walk ?", a: "Aller directement sur le terrain pour observer la réalité du travail, écouter les équipes et identifier les gaspillages." },
+            { type: "Flashcard", q: "Qu'est-ce qu'un audit qualité interne ?", a: "Un processus méthodique, indépendant et documenté permettant de vérifier de manière objective si le système qualité est conforme et efficace." },
+            { type: "Flashcard", q: "Qu'est-ce que le Takt Time ?", a: "Le rythme de production idéal pour coller exactement à la demande client : Takt Time = Temps de travail disponible / Volume de demande client." },
+            { type: "Flashcard", q: "Qu’est-ce qu’une non-conformité (NC) ?", a: "C’est la non-satisfaction d’une exigence (écart entre une situation observée et une exigence définie)." },
+            { type: "Flashcard", q: "Qu’est-ce qu’un processus ?", a: "Un ensemble d’activités liées entre elles qui transforme des éléments d’entrée en éléments de sortie afin de créer de la valeur." },
+            { type: "Flashcard", q: "Quelle est la différence entre action corrective et action de correction ?", a: "La correction traite le problème constaté ; l’action corrective élimine la cause profonde de la non-conformité pour empêcher sa réapparition." },
+            { type: "Flashcard", q: "Comment le cycle PDCA s’articule-t-il avec ISO 9001:2015 ?", a: "PLAN : chapitres 4-6 ; DO : chapitres 7-8 ; CHECK : chapitre 9 ; ACT : chapitre 10." },
+            { type: "Flashcard", q: "Que signifie l’approche par les risques dans ISO 9001 ?", a: "L’organisation doit identifier et traiter les risques et opportunités pour influencer positivement l'atteinte des objectifs." },
+            { type: "Flashcard", q: "Que signifie qu’ISO 9001 n’impose pas de moyen particulier ?", a: "Elle fixe des exigences de résultats mais laisse le choix des méthodes et moyens adaptés au contexte de l'organisation." },
+            { type: "Flashcard", q: "Qu’est-ce que l’ISO 14001 ?", a: "La norme de système de management environnemental pour maîtriser les impacts environnementaux." },
+            { type: "Flashcard", q: "Qu’est-ce que l’ISO 26000 ?", a: "Un référentiel de lignes directrices (non certifiable) sur la responsabilité sociétale des organisations." },
+            { type: "Flashcard", q: "Qu’est-ce que la MSP/SPC ?", a: "L’utilisation de données statistiques pour surveiller la stabilité et la variabilité d’un procédé." },
+            { type: "Flashcard", q: "Quelle différence entre cause commune et cause spéciale en MSP ?", a: "Cause commune : Variabilité normale et inhérente au procédé. Cause spéciale : Variation anormale, identifiable et corrigeable." },
+            { type: "Flashcard", q: "Quels sont les 7 gaspillages classiques du Lean ?", a: "Surproduction, attente, transport, processus inutiles/sur-qualité, stocks, mouvements inutiles, défauts/rebuts (8e : sous-utilisation des compétences)." },
+            { type: "Flashcard", q: "Quels sont les 5S ?", a: "Seiri (trier), Seiton (ranger), Seiso (nettoyer), Seiketsu (standardiser), Shitsuke (maintenir/discipliner)." },
+            { type: "Flashcard", q: "Quelle différence entre Kaizen et innovation de rupture ?", a: "Kaizen : Amélioration continue par petits pas portée par le terrain. Innovation de rupture : Changement radical, ponctuel et lourd financièrement." },
+            { type: "Flashcard", q: "Qu’est-ce qu’un Poka-Yoke ?", a: "Un dispositif qui empêche une erreur ou la détecte immédiatement." },
+            { type: "Flashcard", q: "Quels sont les 4 axes du Balanced Scorecard ?", a: "Financière ; Clients ; Processus internes ; Apprentissage & innovation." },
+            { type: "Flashcard", q: "Quelle est la logique de cause à effet du BSC ?", a: "Apprentissage/Innovation → Processus internes → Client → Financier." },
+            { type: "Flashcard", q: "Que signifie RACI ?", a: "R = Responsible, A = Accountable, C = Consulted, I = Informed." },
+            { type: "Flashcard", q: "Qu’est-ce que le modèle de Kano ?", a: "Un modèle classant les attributs client en : Must-be (basiques), One-dimensional (proportionnels) et Attractive (séduisants)." },
+            { type: "Flashcard", q: "Quelle différence entre étalonnage, vérification et ajustage ?", a: "Étalonnage : Déterminer l'écart par rapport à une référence. Vérification : Confirmer la conformité à une exigence. Ajustage : Corriger l’instrument." },
+            { type: "Flashcard", q: "À quelle fréquence minimale la revue de direction doit-elle être réalisée ?", a: "Au minimum une fois par an (à intervalles planifiés)." },
+
+            // --- Part II: QCMs ---
+            { type: "QCM", q: "Combien la norme ISO 9001:2015 compte-t-elle de principes de management de la qualité ?", options: ["A) 5", "B) 7", "C) 8", "D) 10"], a: "B (7 principes directeurs)" },
+            { type: "QCM", q: "Dans la structure HLS de l'ISO 9001, quel chapitre traite spécifiquement de l'évaluation des performances ?", options: ["A) Chapitre 5", "B) Chapitre 7", "C) Chapitre 8", "D) Chapitre 9"], a: "D (Chapitre 9)" },
+            { type: "QCM", q: "Quelle est la particularité d'un objectif formulé selon la logique SMART ?", options: ["A) Théorique", "B) Spécifique, Mesurable, Atteignable, Pertinent et Temporel", "C) Exclusif finance", "D) Sans suivi"], a: "B" },
+            { type: "QCM", q: "Quelle est la durée de validité d'un certificat ISO 9001 après sa délivrance initiale ?", options: ["A) 1 an", "B) 3 ans", "C) 5 ans", "D) Illimitée"], a: "B (3 ans)" },
+            { type: "QCM", q: "Quel est le rôle principal du diagramme de Pareto (loi des 80/20) dans une démarche qualité ?", options: ["A) Trouver les causes", "B) Précision d'équipement", "C) Prioriser les problèmes (20 % causes / 80 % effets)", "D) Rédiger la politique"], a: "C" },
+            { type: "QCM", q: "Pour structurer l'analyse des causes d'un problème récurrent lors d'un brainstorming, quel outil utilise-t-on couramment ?", options: ["A) BSC", "B) Matrice RACI", "C) Le diagramme d'Ishikawa (les 5M)", "D) ECOGRAI"], a: "C" },
+            { type: "QCM", q: "Quelle question le QQOQCCP permet-il de résoudre en priorité ?", options: ["A) Budget", "B) Le cadrage factuel et complet de l'état d'un problème", "C) Satisfaction", "D) Étalonnage"], a: "B" },
+            { type: "QCM", q: "Dans l'outil AMDEC, comment se calcule l'Indice de Priorité du Risque (IPR) ?", options: ["A) G + O + D", "B) G × O × D", "C) (G × O) / D", "D) G × O"], a: "B" },
+            { type: "QCM", q: "Quelle intervention est la SEULE capable de réduire le factor de Gravité (G) dans une AMDEC ?", options: ["A) Contrôle de fin", "B) Poka-Yoke", "C) Modifier la conception même du produit ou du process", "D) Fréquence d'audit"], a: "C" },
+            { type: "QCM", q: "Sur une carte de contrôle en MSP (SPC), que signifie l'apparition de 7 points consécutifs du même côté de la ligne centrale ?", options: ["A) Parfait contrôle", "B) Variation naturelle", "C) Une cause spéciale (assignable) est à l'origine d'une dérive qu'il faut investiguer", "D) Mauvais calibrage"], a: "C" },
+            { type: "QCM", q: "Un processus présente un Cp = 1,8 mais un Cpk = 0,6. Quelle en est la conclusion ?", options: ["A) Dispersion large", "B) Excellente précision (faible dispersion) mais très mal centré", "C) Conforme", "D) Impossible"], a: "B" },
+            { type: "QCM", q: "En métrologie, quelle est la différence majeure entre un étalonnage et un ajustage ?", options: ["A) Étalonnage répare", "B) L'étalonnage compare l'appareil à un étalon sans le corriger, l'ajustage modifie l'appareil", "C) Étalonnage mensuel", "D) Aucun"], a: "B" },
+            { type: "QCM", q: "Dans la philosophie Lean, que désigne le terme 'MUDA' ?", options: ["A) Standard hygiène", "B) Étape valeur", "C) Tout gaspillage ou activité qui ne crée pas de valeur pour le client", "D) Temps cycle"], a: "C" },
+            { type: "QCM", q: "Quel est l'objectif principal de la cartographie VSM (Value Stream Mapping) ?", options: ["A) RACI", "B) Visualiser les flux physiques et d'information pour identifier les TVA et éliminer les TNVA", "C) Cpk", "D) ISO 14001"], a: "B" },
+            { type: "QCM", q: "Dans un système de production en 'flux tiré' (JAT / Kanban) :", options: ["A) Un max de stock", "B) La production est déclenchée uniquement par la commande ou la consommation du poste aval", "C) Tourne à 100%", "D) Aucun rôle qualité"], a: "B" },
+            { type: "QCM", q: "Quel niveau de défauts par million d'opportunités (DPMO) garantit théoriquement une démarche Six Sigma (6σ) ?", options: ["A) 600 DPMO", "B) 3,4 DPMO", "C) 0 DPMO", "D) 34 DPMO"], a: "B" },
+            { type: "QCM", q: "Dans la matrice RACI, que signifie la lettre 'A' (Accountable) ?", options: ["A) Assistant", "B) Actionneur", "C) L'unique responsable final qui valide le résultat et rend des comptes", "D) Informé après"], a: "C" },
+            { type: "QCM", q: "Les 4 axes de la carte stratégique du Balanced Scorecard sont :", options: ["A) Achats, Prod, Ventes, SAV", "B) Financier, Clients, Processus internes, Apprentissage organisationnel", "C) QSE/RSE", "D) Conception..."], a: "B" },
+            { type: "QCM", q: "Dans le modèle de Kano, à quelle catégorie appartient un critère dont l'absence crée une immense frustration, mais dont la présence est considérée comme normale et n'augmente pas la satisfaction ?", options: ["A) Attraction", "B) Proportionnel", "C) Critère basique / obligatoire (Must-be)", "D) Inverse"], a: "C" },
+            { type: "QCM", q: "Comment se calcule le score NPS (Net Promoter Score) ?", options: ["A) % Promoteurs - % Détracteurs", "B) % Promoteurs + % Passifs", "C) % Promoteurs / % Détracteurs", "D) % Passifs - % Détracteurs"], a: "A" },
+            { type: "QCM", q: "Quelle catégorie de clients selon l'échelle NPS attribue une note de 7 ou 8 à la question de recommandation ?", options: ["A) Détricoteurs", "B) Détracteurs", "C) Les passifs (ou neutres)", "D) Promoteurs"], a: "C" },
+            { type: "QCM", q: "La règle dite '1-10-100' (effet amplificateur du coût de non-qualité) montre que :", options: ["A) Prévention plus chère", "B) Corriger un défaut coûte multiplié par 10 à chaque étape où il progresse", "C) 100 réclamations", "D) Détection à 10%"], a: "B" },
+            { type: "QCM", q: "La norme EN 9100 est le référentiel d'assurance qualité spécifique à quel secteur d'activité ?", options: ["A) Automobile", "B) Médical", "C) L'aéronautique, le spatial et la défense", "D) Agroalimentaire"], a: "C" },
+            { type: "QCM", q: "Quel théoricien de la qualité est célèbre pour ses '14 points de management' et la popularisation du cycle PDCA ?", options: ["A) Juran", "B) W. Edwards Deming", "C) Ishikawa", "D) Taguchi"], a: "B" },
+            { type: "QCM", q: "Quelle est la différence majeure entre le TQM (Total Quality Management) et l'Assurance Qualité classique ?", options: ["A) TQM certifiable", "B) L'Assurance Qualité vise la conformité, le TQM est une culture globale orientée excellence", "C) Pas de clients", "D) Lean uniquement"], a: "B" },
+            { type: "QCM", q: "Quelle définition correspond le mieux à une non-conformité ?", options: ["A) Amélioration", "B) La non-satisfaction d’une exigence", "C) Baisse du CA", "D) Audit réussi"], a: "B" },
+            { type: "QCM", q: "Dans le cycle PDCA appliqué à ISO 9001, quel chapitre correspond principalement à CHECK ?", options: ["A) Chapitres 4-6", "B) Chapitres 7-8", "C) Chapitre 9", "D) Chapitre 10"], a: "C" },
+            { type: "QCM", q: "Quelle affirmation sur ISO 9001 est correcte ?", options: ["A) Impose une méthode unique", "B) Elle impose des résultats/exigences mais laisse le choix des moyens", "C) Sans risques", "D) Remplace les normes sectorielles"], a: "B" },
+            { type: "QCM", q: "Quel est l’objectif principal de la MSP/SPC ?", options: ["A) Remplacer audits", "B) Surveiller la stabilité et la variabilité d’un procédé grâce aux données", "C) Calculer le NPS", "D) Matrice RACI"], a: "B" },
+            { type: "QCM", q: "Une cause spéciale en MSP est :", options: ["A) Toujours normale", "B) Une variation anormale et identifiable", "C) Exigence client", "D) Coût de prévention"], a: "B" },
+            { type: "QCM", q: "Lequel n’est PAS un gaspillage Lean classique ?", options: ["A) Attente", "B) Surproduction", "C) Formation du personnel", "D) Stocks"], a: "C" },
+            { type: "QCM", q: "Quel est le bon ordre des 5S ?", options: ["A) Trier, ranger, nettoyer, standardiser, maintenir", "B) Ranger, trier...", "C) Nettoyer, trier...", "D) Trier, produire..."], a: "A" },
+            { type: "QCM", q: "Quelle phrase décrit le mieux le Poka-Yoke ?", options: ["A) Calcul financier", "B) Un dispositif qui empêche ou détecte immédiatement une erreur", "C) Indicateur client", "D) Norme ISO"], a: "B" },
+            { type: "QCM", q: "Dans le BSC, quel axe concerne directement la satisfaction et la fidélisation ?", options: ["A) Financier", "B) Client", "C) Processus internes", "D) Apprentissage"], a: "B" },
+            { type: "QCM", q: "Dans une matrice RACI, combien doit-il idéalement y avoir de A par activité ?", options: ["A) Aucun", "B) Un seul", "C) Au moins trois", "D) Autant que de R"], a: "B" },
+            { type: "QCM", q: "Dans le modèle de Kano, une exigence Must-be est :", options: ["A) Inutile", "B) Basique : son absence crée de l’insatisfaction", "C) Surprenant", "D) Indicateur financier"], a: "B" },
+            { type: "QCM", q: "Que fait réellement un étalonnage ?", options: ["A) Corrige automatiquement", "B) Il détermine la relation/écart avec une référence", "C) Détruit l'incertitude", "D) Remplace la vérification"], a: "B" },
+            { type: "QCM", q: "Quelle info est une entrée typique de la revue de direction ?", options: ["A) Couleur du logo", "B) Les résultats d’audits et la satisfaction client", "C) Nombre de réunions", "D) Uniquement le CA"], a: "B" },
+            { type: "QCM", q: "Quelle est une sortie attendue de la revue de direction ?", options: ["A) Aucune décision", "B) Des décisions et actions d’amélioration, avec ressources si nécessaire", "C) Enquête client", "D) Organigramme obligatoire"], a: "B" },
+            { type: "QCM", q: "Quelle différence fondamentale existe entre étalonnage et ajustage ?", options: ["A) Aucune", "B) L’étalonnage connaît l’écart ; l’ajustage le corrige", "C) Ajustage mesure l'incertitude", "D) L'étalonnage ne concerne pas les instruments"], a: "B" }
+        ];
+
+        let currentRevision = null;
+
+        function drawRevision() {
+            const index = Math.floor(Math.random() * revisionDatabase.length);
+            currentRevision = revisionDatabase[index];
+
+            // Remplir la question
+            document.getElementById('rev-type').textContent = `⚡ Mode : ${currentRevision.type}`;
+            document.getElementById('rev-question').textContent = currentRevision.q;
+
+            // Options si QCM
+            const optionsContainer = document.getElementById('rev-options');
+            if (currentRevision.type === "QCM" && currentRevision.options) {
+                optionsContainer.style.display = "flex";
+                optionsContainer.innerHTML = currentRevision.options
+                    .map(opt => `<div class="option-item">${opt}</div>`).join('');
+            } else {
+                optionsContainer.style.display = "none";
+            }
+
+            // Reset de la réponse masquée
+            const answerBox = document.getElementById('rev-answer');
+            answerBox.classList.remove('show');
+            document.getElementById('rev-answer-text').innerHTML = currentRevision.a;
+
+            // Afficher le bouton de révélation
+            document.getElementById('btn-reveal').style.display = "inline-block";
+        }
+
+        function revealAnswer() {
+            const answerBox = document.getElementById('rev-answer');
+            answerBox.classList.add('show');
+            document.getElementById('btn-reveal').style.display = "none";
+        }
+
         function getWeatherEmoji(code) {
             if (code === 0) return '☀️';
             if ([1, 2, 3].includes(code)) return '⛅';
@@ -1537,7 +1808,7 @@
                     }
                 });
             } catch (err) {
-                console.error("Erreur lors de la récupération de la météo des étapes:", err);
+                console.error("Erreur reçue lors de l'appel météo : ", err);
             }
         }
 
@@ -1662,10 +1933,11 @@
 
         function switchTab(tab) {
             document.querySelectorAll('.tab-btn').forEach((btn, i) => {
-                btn.classList.toggle('active', (tab === 'roadmap' && i === 0) || (tab === 'games' && i === 1));
+                btn.classList.toggle('active', (tab === 'roadmap' && i === 0) || (tab === 'games' && i === 1) || (tab === 'revision' && i === 2));
             });
             document.getElementById('tab-roadmap').classList.toggle('active', tab === 'roadmap');
             document.getElementById('tab-games').classList.toggle('active', tab === 'games');
+            document.getElementById('tab-revision').classList.toggle('active', tab === 'revision');
         }
 
         function changeScore(player, delta) {
