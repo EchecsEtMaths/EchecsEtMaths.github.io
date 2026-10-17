@@ -1,0 +1,591 @@
+:root {
+    --fond: #333;
+    --surface: #222;
+    --trait: #444;
+    --texte: #f2f2f2;
+    --texte-doux: #b5b5b5;
+    --rose: #ff9ac8;
+    --bleu: #7ab8ff;
+    --vert: #2ea043;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    padding: 10px 14px 30px;
+    background-color: var(--fond);
+    color: var(--texte);
+    font-family: system-ui, -apple-system, "Segoe UI", Arial, sans-serif;
+}
+
+button {
+    font: inherit;
+    color: inherit;
+    background: #444;
+    border: 1px solid #666;
+    border-radius: 6px;
+    padding: 6px 12px;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #555;
+}
+
+button:focus-visible {
+    outline: 2px solid var(--bleu);
+    outline-offset: 2px;
+}
+
+/* ---------- Barre du haut ---------- */
+.barre {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 10px;
+    border-bottom: 1px solid var(--trait);
+    margin-bottom: 18px;
+}
+
+.onglets {
+    display: flex;
+    gap: 4px;
+}
+
+.onglet {
+    background: none;
+    border: none;
+    border-bottom: 3px solid transparent;
+    border-radius: 0;
+    padding: 10px 16px;
+    color: var(--texte-doux);
+}
+
+.onglet:hover {
+    background: none;
+    color: var(--texte);
+}
+
+.onglet.actif {
+    color: var(--texte);
+    font-weight: 600;
+    border-bottom-color: var(--vert);
+}
+
+.auth {
+    display: flex;
+    gap: 6px;
+    padding-bottom: 6px;
+}
+
+.vue[hidden] {
+    display: none;
+}
+
+.info {
+    color: var(--texte-doux);
+}
+
+/* ---------- Tableau de bord ---------- */
+.mois-titre {
+    margin: 0 0 20px;
+    font-size: 2rem;
+    font-weight: 600;
+}
+
+.grille {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(420px, 100%), 1fr));
+    gap: 16px;
+    max-width: 1100px;
+}
+
+.bloc {
+    background: var(--surface);
+    border: 1px solid var(--trait);
+    border-radius: 8px;
+    padding: 18px 20px;
+}
+
+.bloc.large {
+    grid-column: 1 / -1;
+}
+
+.bloc h2 {
+    margin: 0 0 10px;
+    font-size: 1.05rem;
+    font-weight: 600;
+}
+
+/* Légende des graphiques */
+.legende {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 18px;
+    margin-bottom: 8px;
+    font-size: 0.85rem;
+    color: var(--texte-doux);
+}
+
+.legende span::before {
+    content: "";
+    display: inline-block;
+    width: 18px;
+    height: 3px;
+    margin-right: 6px;
+    vertical-align: middle;
+    background: var(--c);
+}
+
+/* Graphiques SVG */
+.graph {
+    display: block;
+    width: 100%;
+    height: auto;
+}
+
+.graph .g {
+    stroke: #3d3d3d;
+    stroke-width: 1;
+}
+
+.graph text {
+    fill: var(--texte-doux);
+    font-size: 11px;
+}
+
+.graph text.mc {
+    fill: var(--texte);
+    font-weight: 700;
+}
+
+.graph circle {
+    stroke: var(--surface);
+    stroke-width: 2;
+}
+
+/* Mois en cours */
+.mois-cols {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr));
+    gap: 28px;
+}
+
+.vs {
+    display: grid;
+    gap: 18px;
+    align-content: start;
+}
+
+.vs-ligne .entete {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 2px 12px;
+    margin-bottom: 6px;
+    font-variant-numeric: tabular-nums;
+}
+
+.vs-ligne .nom {
+    font-weight: 600;
+    color: var(--c);
+}
+
+.piste {
+    height: 14px;
+    background: #3a3a3a;
+    border-radius: 7px;
+    overflow: hidden;
+}
+
+.piste>i {
+    display: block;
+    height: 100%;
+    background: var(--c);
+    border-radius: 7px;
+}
+
+.reste {
+    margin-top: 4px;
+    font-size: 0.85rem;
+    color: var(--texte-doux);
+}
+
+.reste.neg {
+    color: #ff7b72;
+}
+
+.equilibrage h3 {
+    margin: 0 0 4px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--texte-doux);
+}
+
+.equilibrage .montant {
+    font-size: 2.2rem;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+}
+
+.equilibrage p {
+    margin: 4px 0 14px;
+}
+
+.madame-txt {
+    color: var(--rose);
+}
+
+.monsieur-txt {
+    color: var(--bleu);
+}
+
+.detail {
+    margin: 0;
+}
+
+.detail>div {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 7px 10px;
+    border-radius: 4px;
+    margin-bottom: 4px;
+    font-size: 0.9rem;
+    font-variant-numeric: tabular-nums;
+}
+
+.detail dt,
+.detail dd {
+    margin: 0;
+}
+
+.detail .madame {
+    color: var(--rose);
+    background: rgba(255, 105, 180, 0.10);
+}
+
+.detail .monsieur {
+    color: var(--bleu);
+    background: rgba(70, 130, 255, 0.10);
+}
+
+
+/* ---------- Détails ---------- */
+#content {
+    overflow-x: auto;
+}
+
+.tableau-moderne {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+    white-space: nowrap;
+    background-color: var(--surface);
+}
+
+.tableau-moderne td {
+    padding: 3px 6px;
+    text-align: right;
+    border: 1px solid var(--trait);
+}
+
+/* Première colonne figée à gauche */
+.tableau-moderne td:first-child {
+    text-align: left;
+    font-weight: bold;
+    position: sticky;
+    left: 0;
+    background-color: var(--surface);
+}
+
+.madame {
+    color: var(--rose);
+    background-color: rgba(255, 105, 180, 0.08);
+}
+
+.monsieur {
+    color: var(--bleu);
+    background-color: rgba(70, 130, 255, 0.08);
+}
+
+.mois-head {
+    text-align: center !important;
+    font-weight: bold;
+    background-color: #555;
+}
+
+.mois-courant {
+    background-color: rgba(46, 160, 67, 0.35);
+}
+
+.mois-head.mois-courant {
+    background-color: var(--vert);
+}
+
+/* Lignes Total, Théorique, Equilibrage... : pas de couleur */
+.neutre {
+    color: var(--texte);
+    background-color: transparent;
+}
+
+.neutre.fusion {
+    text-align: center;
+}
+
+/* ===== À AJOUTER À LA FIN DE style.css ===== */
+
+button:disabled {
+    opacity: 0.5;
+    cursor: default;
+}
+
+/* Messages de retour (succès / erreur) */
+.statut {
+    min-height: 1.2em;
+    margin: 8px 0 0;
+    font-size: 0.85rem;
+    color: var(--texte-doux, #b5b5b5);
+}
+
+.statut.ok {
+    color: #56d364;
+}
+
+.statut.erreur {
+    color: #ff7b72;
+}
+
+/* Bouton "Marquer comme réglé" sous l'équilibrage */
+.regle {
+    margin-top: 14px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+}
+
+.regle .statut {
+    flex-basis: 100%;
+    margin: 0;
+}
+
+.badge-regle {
+    padding: 4px 10px;
+    border-radius: 999px;
+    background: rgba(46, 160, 67, 0.25);
+    color: #56d364;
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+button.secondaire {
+    background: none;
+    color: var(--texte-doux, #b5b5b5);
+}
+
+/* Formulaire "Ajouter une dépense" */
+.form-depense {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: 14px 20px;
+}
+
+.form-depense fieldset {
+    border: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    gap: 8px;
+}
+
+.form-depense legend,
+.champ>span {
+    display: block;
+    margin-bottom: 4px;
+    padding: 0;
+    font-size: 0.85rem;
+    color: var(--texte-doux, #b5b5b5);
+}
+
+.champ input {
+    display: block;
+    width: 150px;
+    padding: 7px 10px;
+    font: inherit;
+    color: inherit;
+    background: #2b2b2b;
+    border: 1px solid #666;
+    border-radius: 6px;
+}
+
+.champ input:focus-visible {
+    outline: 2px solid var(--bleu, #7ab8ff);
+    outline-offset: 1px;
+}
+
+.puce {
+    position: relative;
+}
+
+.puce input {
+    position: absolute;
+    opacity: 0;
+    inset: 0;
+    cursor: pointer;
+}
+
+.puce span {
+    display: block;
+    padding: 7px 14px;
+    border: 1px solid #666;
+    border-radius: 6px;
+    color: var(--texte-doux, #b5b5b5);
+}
+
+.puce input:focus-visible+span {
+    outline: 2px solid var(--bleu, #7ab8ff);
+    outline-offset: 2px;
+}
+
+.puce-madame input:checked+span {
+    color: var(--rose, #ff9ac8);
+    border-color: var(--rose, #ff9ac8);
+    background: rgba(255, 105, 180, 0.12);
+}
+
+.puce-monsieur input:checked+span {
+    color: var(--bleu, #7ab8ff);
+    border-color: var(--bleu, #7ab8ff);
+    background: rgba(70, 130, 255, 0.12);
+}
+
+.form-depense .statut {
+    flex-basis: 100%;
+    margin: 0;
+}
+
+
+/* Tableau de bord : contenu principal à gauche, ajout de dépense à droite */
+.tableau-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 280px;
+    gap: 16px;
+    align-items: start;
+    max-width: 1450px;
+}
+
+.tableau-layout .grille {
+    max-width: none;
+}
+
+.colonne-droite {
+    position: sticky;
+    top: 10px;
+}
+
+/* Sur écran étroit, l'encart repasse sous le reste */
+@media (max-width: 1100px) {
+    .tableau-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .colonne-droite {
+        position: static;
+    }
+}
+
+/* Formulaire empilé dans la colonne de droite */
+.colonne-droite .form-depense {
+    flex-direction: column;
+    align-items: stretch;
+}
+
+.colonne-droite .champ input {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.colonne-droite .form-depense fieldset {
+    flex-wrap: wrap;
+}
+
+/* Détails : mois réglé (case "Reglé ?" en vert) */
+.neutre.regle-ok {
+    background-color: rgba(46, 160, 67, 0.55);
+}
+
+/* Bouton "Réglé" sur chaque ligne de mois */
+.detail button.mini {
+    padding: 2px 10px;
+    font-size: 0.8rem;
+    white-space: nowrap;
+}
+
+.detail>div {
+    align-items: center;
+}
+
+/* Loader : chargement de toute la page */
+.loader {
+    width: 44px;
+    height: 44px;
+    margin: 80px auto;
+    border: 4px solid #555;
+    border-top-color: var(--vert, #2ea043);
+    border-radius: 50%;
+    animation: tourne 0.8s linear infinite;
+}
+
+@keyframes tourne {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Shimmer : chargement d'un encart seulement */
+.shimmer {
+    position: relative;
+    overflow: hidden;
+    pointer-events: none;
+}
+
+.shimmer>* {
+    opacity: 0.35;
+}
+
+.shimmer::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(100deg,
+            transparent 20%,
+            rgba(255, 255, 255, 0.14) 50%,
+            transparent 80%);
+    transform: translateX(-100%);
+    animation: balayage 1.3s ease-in-out infinite;
+}
+
+@keyframes balayage {
+    to {
+        transform: translateX(100%);
+    }
+}
+
+/* Mouvement réduit : le loader tourne plus lentement, le shimmer devient un simple voile fixe */
+@media (prefers-reduced-motion: reduce) {
+    .loader {
+        animation-duration: 2.5s;
+    }
+
+    .shimmer::after {
+        animation: none;
+        transform: none;
+        background: rgba(255, 255, 255, 0.06);
+    }
+}
