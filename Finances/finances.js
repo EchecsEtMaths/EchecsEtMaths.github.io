@@ -689,3 +689,21 @@
                 bouton.disabled = false;
             }
         });
+
+function chargerScript(src) {
+    return new Promise((resolve, reject) => {
+        const s = document.createElement('script');
+        s.src = src;
+        s.onload = resolve;
+        s.onerror = () => reject(new Error(`Impossible de charger ${src} (bloqueur de publicités ou réseau ?)`));
+        document.head.appendChild(s);
+    });
+}
+
+chargerScript('https://apis.google.com/js/api.js')
+    .then(() => gapiLoaded())
+    .catch(err => afficherMessage(err.message));
+
+chargerScript('https://accounts.google.com/gsi/client')
+    .then(() => gisLoaded())
+    .catch(err => afficherMessage(err.message));
