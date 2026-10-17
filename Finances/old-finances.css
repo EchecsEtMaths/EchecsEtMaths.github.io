@@ -1,0 +1,28 @@
+table {
+    border-collapse: collapse;
+}
+
+th {
+    background-color: var(--background-highlight-color);
+}
+
+th,
+td {
+    padding: 15px;
+}
+
+tr {
+    border-bottom: 1px solid var(--border-color);
+}
+
+#contenu-comptes {
+    display: flex;
+}
+
+#contenu-comptes div {
+    padding-left: 20px;
+}
+
+.delete-transaction {
+    cursor: pointer;
+}

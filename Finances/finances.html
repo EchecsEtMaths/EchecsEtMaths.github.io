@@ -4,56 +4,40 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lifeboard - Finances</title>
-    <link rel="icon" href="../favicon.png" type="image/png">
+    <title>Budget 2026</title>
 
-    <link rel="stylesheet" href="../index.css" type="text/css">
-    <link rel="stylesheet" href="finances.css" type="text/css">
-
+    <link rel="stylesheet" href="finances.css">
 </head>
 
 <body>
-    <script src="../const.js"></script>
-    <script type="module" src="finances.js"></script>
-    <nav>
-        <h1>Lifeboard</h1>
-        <div id="menu">
-            <a href="../ProgressionJournee/ProgressionJournee.html">⏱️ Progression de la journée</a>
-            <a href="../Admin/admin.html" id="button-admin">🔒 Admin</a>
-            <a href="../Finances/finances.html" class="selected-onglet">💰 Finances</a>
+    <header class="barre">
+        <nav class="onglets" role="tablist">
+            <button class="onglet actif" role="tab" aria-selected="true" data-onglet="dashboard">Tableau de
+                bord</button>
+            <button class="onglet" role="tab" aria-selected="false" data-onglet="details">Détails</button>
+        </nav>
+        <div class="auth">
+            <button id="authorize_button">Authorize</button>
+            <button id="signout_button">Sign Out</button>
         </div>
-        <div id="menu-bottom">
-            <button id="logout">Deconnexion</button>
-        </div>
-    </nav>
+    </header>
 
     <main>
-        <h2>Finances</h2>
-        <div id="contenu-comptes">
-            <table>
-                <thead>
-                    <tr>
-                        <th scope="col">Date</th>
-                        <th scope="col">Description</th>
-                        <th scope="col">Montant</th>
-                        <th></th>
-                    </tr>
-                </thead>
-                <tbody id="content-finances">
-
-                </tbody>
-            </table>
-            <div>
-
-                <h4>Ajouter une transaction</h4>
-                <input type="date" id="inputDate" />
-                <input type="text" placeholder="Description de la transaction" id="inputDescription" />
-                <input type="number" min="0.00" step="0.01" id="inputMontant" value="0.00" />
-                <button id="createTransaction">Ajouter</button>
+        <section id="vue-dashboard" class="vue">
+            <div id="dashboard">
+                <p class="info">Cliquez sur Authorize pour charger les données.</p>
             </div>
-        </div>
+        </section>
+        <section id="vue-details" class="vue" hidden>
+            <div id="content">
+                <p class="info">Cliquez sur Authorize pour charger les données.</p>
+            </div>
+        </section>
     </main>
 
+    <script type="module" src="finances.js"></script>
+    <script async defer src="https://apis.google.com/js/api.js" onload="gapiLoaded()"></script>
+    <script async defer src="https://accounts.google.com/gsi/client" onload="gisLoaded()"></script>
 </body>
 
 </html>
