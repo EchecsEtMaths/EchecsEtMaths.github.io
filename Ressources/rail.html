@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Life Board – Déclinaisons Rail + Hero</title>
+<style>
+/* ============ SHELL (sélecteur d'onglets) ============ */
+*{box-sizing:border-box}
+body{margin:0;background:#0c0c10;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+.picker{position:sticky;top:0;z-index:100;display:flex;gap:8px;padding:10px 14px;background:#0c0c10;border-bottom:1px solid #2a2a33;overflow-x:auto}
+.picker button{flex:0 0 auto;border:1px solid #3a3a46;background:#181820;color:#d8d8e2;padding:8px 14px;border-radius:99px;cursor:pointer;font-size:14px}
+.picker button[aria-selected=true]{background:#fff;color:#000;border-color:#fff;font-weight:600}
+.panel{display:none}.panel.active{display:block}
+.note{background:#15151c;color:#c9c9d6;padding:12px 18px;font-size:13.5px;line-height:1.5;border-bottom:1px solid #2a2a33}
+.note b{color:#fff}
+
+/* ============ BASE COMMUNE ============ */
+.bt{--font:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;--fh:var(--font);
+  --bw:0px;--bc:transparent;--shadow:none;--gap:14px;--pad:20px;--radius:28px;--barh:10px;
+  --muted:rgba(25,25,35,.6);--barbg:rgba(0,0,0,.1);--good:#14804a;
+  background:var(--bg);color:var(--pt,var(--ink));font-family:var(--font);min-height:calc(100vh - 100px);position:relative}
+.bt h1,.bt h2,.bt h3{font-family:var(--fh);margin:0}
+.bt ul{list-style:none;margin:0;padding:0}
+.bt a{color:inherit;text-decoration:none;cursor:pointer}
+.bt .layout{display:grid;min-height:calc(100vh - 100px)}
+.bt .grid{display:grid;gap:var(--gap)}
+.hd-date{opacity:.65;font-size:13px}
+
+/* Rail */
+.bt .rail{display:flex;flex-direction:column;align-items:center;gap:10px}
+.bt .rail em{font-style:normal}
+.bt .rail a span{display:none}
+.bt .rail .lg{width:46px;height:46px;border-radius:16px;display:grid;place-items:center;font-weight:800;margin-bottom:10px;font-size:15px}
+.bt .rail a{width:46px;height:46px;border-radius:50%;display:grid;place-items:center;font-size:19px;transition:background .2s}
+
+/* Hero */
+.bt .hero{grid-column:1/-1;background:var(--hbg);color:var(--hink);border-radius:var(--radius);padding:26px 30px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:18px}
+.bt .hero h1{font-size:42px;letter-spacing:-1.5px;line-height:1.05}
+.bt .hero p{margin:8px 0 0;opacity:.75;font-size:14px}
+.chips{display:flex;gap:8px;flex-wrap:wrap}
+.chips span{padding:9px 15px;border-radius:99px;font-size:13px;font-weight:600;color:#1c1c26}
+
+/* Tuiles */
+.tile{background:var(--tc,#fff);color:var(--ink);border:var(--bw) solid var(--bc);border-radius:var(--radius);padding:var(--pad);box-shadow:var(--shadow);transition:transform .2s,box-shadow .2s}
+.tile h3{margin:0 0 12px;font-size:15px;display:flex;gap:8px;align-items:center}
+.tile small,.tile .muted{color:var(--muted)}
+.w-progress{--tc:var(--c1)}.w-budget{--tc:var(--c2)}.w-bag{--tc:var(--c3)}
+.w-quests{--tc:var(--c4)}.w-people{--tc:var(--c5)}.w-finance{--tc:var(--c6)}
+
+.row{display:flex;justify-content:space-between;align-items:baseline;font-size:13px;margin:10px 0 5px}
+.bar{height:var(--barh);background:var(--barbg);border-radius:99px;overflow:hidden}
+.bar i{display:block;height:100%;width:0;background:var(--ink);border-radius:inherit;transition:width .4s}
+
+.ring-wrap{position:relative;width:var(--rs,112px);height:var(--rs,112px);flex:0 0 auto}
+.ring{position:absolute;inset:0;border-radius:50%;background:conic-gradient(var(--ink) calc(var(--p,0)*1%),var(--barbg) 0);
+  -webkit-mask:radial-gradient(farthest-side,#0000 calc(100% - 13px),#000 calc(100% - 12px));mask:radial-gradient(farthest-side,#0000 calc(100% - 13px),#000 calc(100% - 12px))}
+.ring-wrap b{position:absolute;inset:0;display:grid;place-items:center;font-size:24px;letter-spacing:-1px}
+
+.w-budget label{display:flex;justify-content:space-between;align-items:center;font-size:13px;margin:7px 0}
+.w-budget input{width:96px;padding:6px 8px;border:1.5px solid rgba(0,0,0,.15);background:rgba(255,255,255,.65);color:var(--ink);border-radius:12px;text-align:right;font:inherit}
+.w-budget .res{display:flex;justify-content:space-between;align-items:baseline;margin-top:12px;font-size:13px}
+.w-budget .res b{font-size:26px;letter-spacing:-1px}
+.checks li{padding:5px 0;font-size:14px}
+.checks label{display:flex;gap:10px;align-items:center;cursor:pointer}
+.checks input{accent-color:var(--ink);width:16px;height:16px}
+.quests li{display:flex;gap:12px;align-items:center;padding:9px 0;border-bottom:1px dashed rgba(0,0,0,.18)}
+.quests li:last-child{border:0}
+.quests b{display:block;font-size:14px}.quests small{font-size:12px}
+.q-ic{flex:0 0 28px;height:28px;border-radius:50%;display:grid;place-items:center;font-size:13px;border:2px solid var(--ink)}
+.quests .done .q-ic{background:var(--ink);color:#fff}
+.quests .done b{text-decoration:line-through;color:var(--muted)}
+.people li{display:flex;align-items:center;gap:12px;padding:8px 0}
+.people li div{flex:1}.people b{display:block;font-size:14px}.people small{font-size:12px}
+.av{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;font-weight:700;background:var(--ink);color:#fff;font-size:14px}
+.dots{display:flex;gap:4px}.dots i{width:9px;height:9px;border-radius:50%;background:rgba(0,0,0,.15)}.dots i.on{background:var(--ink)}
+.finance .big{font-size:40px;font-weight:700;letter-spacing:-1.5px;line-height:1.1}
+.finance .up{font-size:13px;color:var(--good);font-weight:600}
+.spark{display:flex;align-items:flex-end;gap:6px;height:70px;margin:14px 0}
+.spark i{flex:1;background:var(--ink);opacity:.3;border-radius:5px 5px 0 0}.spark i:last-child{opacity:1}
+.cats li{display:flex;justify-content:space-between;font-size:13px;padding:4px 0}
+
+/* ============ R1 · CLASSIQUE (référence) ============ */
+.r1{--bg:#f2f0ea;--ink:#1f1f24;--c1:#fbd0dc;--c2:#cde4fb;--c3:#fbeaa6;--c4:#cdeec4;--c5:#ddd3f7;--c6:#fbd9bf;--radius:24px;--hbg:#1f1f24;--hink:#fff}
+.r1 .layout{grid-template-columns:86px 1fr}
+.r1 .railcol{padding:26px 0}
+.r1 .rail .lg{background:#1f1f24;color:#fff}
+.r1 .rail a{background:#fff}
+.r1 .rail a.on{background:#1f1f24;box-shadow:0 0 0 3px #f2f0ea,0 0 0 5px #1f1f24}
+.r1 .rail a.add{background:transparent;border:2px dashed #b8b4a8;color:#8a8678}
+.r1 main{padding:26px 26px 30px 6px}
+.r1 .grid{grid-template-columns:repeat(12,1fr)}
+.r1 .grid>.tile{grid-column:span 4}
+
+/* ============ R2 · NUIT ============ */
+.r2{--bg:#13131a;--pt:#f3f3f8;--ink:#1c1c26;--c1:#f7b6c8;--c2:#a9d6ff;--c3:#ffe48a;--c4:#a9e8a0;--c5:#cbb8ff;--c6:#ffc08f;--radius:26px;
+  --hbg:linear-gradient(115deg,#f7b6c8,#cbb8ff 55%,#a9d6ff);--hink:#1c1c26}
+.r2 .layout{grid-template-columns:86px 1fr}
+.r2 .railcol{padding:26px 0}
+.r2 .rail .lg{background:var(--hbg);color:#1c1c26}
+.r2 .rail a{background:#1f1f2b;border:1px solid rgba(255,255,255,.12)}
+.r2 .rail a:hover{background:#2a2a3a}
+.r2 .rail a.on{background:#f3f3f8;box-shadow:0 0 0 3px #13131a,0 0 0 5px #f3f3f8}
+.r2 .rail a.add{background:transparent;border:2px dashed rgba(255,255,255,.3);color:#aaa}
+.r2 main{padding:26px 26px 30px 6px}
+.r2 .grid{grid-template-columns:repeat(3,1fr);grid-auto-flow:dense}
+.r2 .w-quests{grid-row:span 2}
+.r2 .w-finance{grid-column:1/-1}
+.r2 .tile:hover{transform:translateY(-3px);box-shadow:0 12px 30px rgba(0,0,0,.45)}
+
+/* ============ R3 · RAIL EXTENSIBLE ============ */
+.r3{--bg:#fffaf2;--ink:#1f1f24;--c1:#ffd6e0;--c2:#d3ecff;--c3:#fff0b3;--c4:#d6f5cb;--c5:#e6dbff;--c6:#ffdcbd;--radius:28px;
+  --hbg:linear-gradient(120deg,#ffd6e0,#e6dbff 55%,#d3ecff);--hink:#1f1f24}
+.r3 .layout{grid-template-columns:86px 1fr}
+.r3 .railcol{position:relative}
+.r3 .rail{position:absolute;top:22px;left:14px;width:60px;padding:8px;gap:4px;align-items:stretch;background:#fff;border:1.5px solid #1f1f24;border-radius:30px;overflow:hidden;transition:width .25s,box-shadow .25s;z-index:20}
+.r3 .rail:hover{width:215px;box-shadow:0 14px 36px rgba(0,0,0,.18)}
+.r3 .rail .lg{width:40px;height:40px;border-radius:14px;background:#1f1f24;color:#fff;margin:0 0 6px;font-size:14px}
+.r3 .rail a{display:flex;width:auto;height:42px;border-radius:21px;padding:0 7px;gap:12px;justify-content:flex-start;align-items:center;white-space:nowrap;font-size:14px;font-weight:500}
+.r3 .rail a em{width:24px;text-align:center;font-size:19px}
+.r3 .rail a span{display:inline}
+.r3 .rail a:not(.on):hover{background:#f2eee4}
+.r3 .rail a.on{background:#1f1f24;color:#fff}
+.r3 .rail a.add{border:1.5px dashed #b8b4a8;color:#8a8678}
+.r3 main{padding:26px 26px 30px 0}
+.r3 .grid{grid-template-columns:repeat(6,1fr)}
+.r3 .w-progress,.r3 .w-budget,.r3 .w-bag{grid-column:span 2}
+.r3 .w-quests,.r3 .w-people{grid-column:span 3}
+.r3 .w-finance{grid-column:1/-1}
+.qa{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}
+.qa a{padding:8px 14px;border-radius:99px;background:#fff;border:1.5px solid #1f1f24;font-size:13px;font-weight:600}
+.qa a:hover{background:#1f1f24;color:#fff}
+
+/* ============ R4 · HERO ANNEAUX ============ */
+.r4{--bg:#f4f1ea;--ink:#1f1f24;--c1:#ffd6e0;--c2:#d3ecff;--c3:#fff0b3;--c4:#d6f5cb;--c5:#e6dbff;--c6:#ffdcbd;--radius:28px;--hbg:#1f1f24;--hink:#fff}
+.r4 .layout{grid-template-columns:88px 1fr}
+.r4 .railcol{display:flex;padding:14px 0 14px 14px}
+.r4 .rail{flex:1;background:#1f1f24;border-radius:34px;padding:20px 0;justify-content:flex-start}
+.r4 .rail .lg{background:var(--c4);color:#1f1f24;border-radius:18px}
+.r4 .rail a{background:transparent;color:#fff}
+.r4 .rail a:hover{background:rgba(255,255,255,.12)}
+.r4 .rail a.on{background:rgba(255,255,255,.2);box-shadow:inset 0 0 0 1.5px #fff}
+.r4 .rail a.add{margin-top:auto;border:2px dashed rgba(255,255,255,.35);color:#bbb}
+.r4 main{padding:14px 18px 30px}
+.r4 .grid{grid-template-columns:repeat(12,1fr)}
+.r4 .w-budget,.r4 .w-bag,.r4 .w-people{grid-column:span 4}
+.r4 .w-quests,.r4 .w-finance{grid-column:span 6}
+.r4 .hero4{display:grid;grid-template-columns:1fr auto;gap:28px;padding:30px 34px;--ink:#fff;--barbg:rgba(255,255,255,.18)}
+.r4 .hero4 .lbl{opacity:.7;font-size:13px;display:block;margin-bottom:14px}
+.r4 .hero4 .chips{margin-top:20px}
+.rings{display:flex;gap:26px}
+.rg{display:grid;justify-items:center;gap:6px;font-size:13px;opacity:.95}
+.rg .ring-wrap{--rs:132px}.rg .ring-wrap b{font-size:28px}
+
+/* ============ R5 · STICKER + ÎLOT FLOTTANT ============ */
+.r5{--bg:#fff4d6;--ink:#111;--muted:rgba(17,17,17,.65);--c1:#ff9ec0;--c2:#8fd3ff;--c3:#ffe066;--c4:#9bec8f;--c5:#c9a8ff;--c6:#ffb878;
+  --bw:2.5px;--bc:#111;--shadow:5px 5px 0 #111;--radius:22px;--gap:22px;--barbg:#fff;--barh:14px;--hbg:#ffe066;--hink:#111;
+  background:radial-gradient(rgba(0,0,0,.16) 1.3px,transparent 1.6px) 0 0/20px 20px,#fff4d6}
+.r5 .layout{grid-template-columns:100px 1fr}
+.r5 .railcol{padding:28px 0 0 22px}
+.r5 .rail{position:sticky;top:70px;width:62px;padding:12px 0;background:#fff;border:2.5px solid #111;border-radius:99px;box-shadow:5px 5px 0 #111;gap:8px}
+.r5 .rail .lg{width:42px;height:42px;border-radius:50%;background:#ffe066;border:2.5px solid #111;font-size:13px;margin-bottom:4px}
+.r5 .rail a{width:42px;height:42px;font-size:18px}
+.r5 .rail a:hover{background:#ffe066}
+.r5 .rail a.on{background:#111}
+.r5 .rail a.add{border:2px dashed #111}
+.r5 main{padding:28px 26px 30px 12px}
+.r5 .grid{grid-template-columns:repeat(3,1fr);grid-auto-flow:dense}
+.r5 .w-quests{grid-column:span 2;grid-row:span 2}
+.r5 .hero{border:2.5px solid #111;box-shadow:5px 5px 0 #111;position:relative}
+.r5 .hero h1{font-weight:900}
+.r5 .stk{position:absolute;top:-14px;right:24px;background:#ff9ec0;border:2.5px solid #111;padding:4px 14px;border-radius:99px;font-weight:800;font-size:13px;transform:rotate(4deg);box-shadow:3px 3px 0 #111}
+.r5 .chips span{border:2px solid #111}
+.r5 .tile h3{font-weight:800;font-size:16px}
+.r5 .tile:hover{transform:translate(-2px,-2px);box-shadow:8px 8px 0 #111}
+.r5 .bar{border:2.5px solid #111}
+.r5 .w-budget input{border:2px solid #111;background:#fff}
+.r5 .q-ic{background:#fff}.r5 .av{border:2px solid #111}
+
+/* ============ R6 · TROIS COLONNES (panneau « Aujourd'hui ») ============ */
+.r6{--bg:#ece8f6;--ink:#23203a;--muted:rgba(35,32,58,.62);--c1:#f9d3e0;--c2:#d0e3fa;--c3:#fbeeb2;--c4:#d2efcb;--c5:#ddd0fa;--c6:#fbdcc4;--radius:26px;--hbg:#23203a;--hink:#fff}
+.r6 .layout{grid-template-columns:86px 1fr 310px}
+.r6 .railcol{padding:26px 0}
+.r6 .rail .lg{background:#23203a;color:#fff}
+.r6 .rail a{background:#fff}
+.r6 .rail a.on{background:#23203a;box-shadow:0 0 0 3px #ece8f6,0 0 0 5px #23203a}
+.r6 .rail a.add{background:transparent;border:2px dashed #b3acd0;color:#8b86a8}
+.r6 main{padding:26px 8px 30px 6px}
+.r6 .grid{grid-template-columns:repeat(2,1fr);grid-auto-flow:dense}
+.r6 .hero{padding:22px 26px}.r6 .hero h1{font-size:34px}
+.r6 .w-quests,.r6 .w-finance{grid-column:1/-1}
+.r6 .side{padding:26px 26px 30px 8px}
+.r6 .panel-side{background:#fff;border-radius:var(--radius);padding:22px;position:sticky;top:70px;color:var(--ink)}
+.r6 .panel-side h3{font-size:16px;margin-bottom:4px}
+.r6 .panel-side small{color:var(--muted);font-size:12px}
+.tl{margin:12px 0 4px}
+.tl li{display:grid;grid-template-columns:46px 1fr;gap:10px;padding:6px 0;font-size:13px}
+.tl time{font-weight:700;padding-top:4px}
+.tl li span{border-left:4px solid var(--c);padding:4px 0 4px 10px;display:block}
+.tl li small{display:block}
+.todo{margin:10px 0 18px}
+.todo label{display:flex;gap:10px;align-items:center;font-size:13px;padding:5px 0;cursor:pointer}
+.todo input{accent-color:#23203a;width:16px;height:16px}
+.nudge{background:var(--c5);border-radius:18px;padding:12px 14px;font-size:13px}
+
+/* ============ MOBILE ============ */
+@media(max-width:900px){
+ .bt .layout{display:block;padding-bottom:84px}
+ .bt .grid{grid-template-columns:1fr!important}
+ .bt .grid>*{grid-column:1/-1!important;grid-row:auto!important}
+ .bt main{padding:16px 14px!important}
+ .bt .side{padding:0 14px!important}
+ .bt .panel-side{position:static!important}
+ .bt .hero{padding:22px!important}
+ .bt .hero h1{font-size:32px!important}
+ .bt .hero4{grid-template-columns:1fr!important}
+ .rings{justify-content:space-between}
+ .bt .railcol{position:fixed!important;left:0;right:0;bottom:0;top:auto!important;width:auto!important;margin:0!important;padding:8px 10px!important;background:rgba(20,20,28,.96)!important;border-radius:0!important;z-index:60;display:block!important}
+ .bt .rail{position:static!important;flex-direction:row!important;width:auto!important;padding:0!important;justify-content:space-around;background:none!important;border:0!important;box-shadow:none!important;border-radius:0!important;margin:0!important;overflow:visible!important}
+ .bt .rail a{width:40px!important;height:40px!important;padding:0!important;justify-content:center!important;border-radius:50%!important;background:transparent!important;color:#fff!important;border:0!important;box-shadow:none!important;margin:0!important}
+ .bt .rail a.on{background:rgba(255,255,255,.28)!important}
+ .bt .rail a span,.bt .rail .lg{display:none!important}
+}
+</style>
+</head>
+<body>
+<div class="picker" role="tablist" id="picker"></div>
+<div id="panels"></div>
+
+<script>
+/* ---------- Données & helpers ---------- */
+const NAV=[['🏠','Accueil'],['⏳','Journée'],['🧮','Budget'],['🧳','Valise'],['🗺️','Voyage'],['🤝','Relations'],['📈','Finances']];
+const dots=n=>'<span class="dots">'+[1,2,3,4,5].map(k=>`<i class="${k<=n?'on':''}"></i>`).join('')+'</span>';
+const today=new Date().toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+
+const rail=()=>`<aside class="railcol"><nav class="rail"><div class="lg">LB</div>
+ ${NAV.map((n,i)=>`<a class="${i?'':'on'}" title="${n[1]}"><em>${n[0]}</em><span>${n[1]}</span></a>`).join('')}
+ <a class="add" title="Ajouter une page"><em>＋</em><span>Ajouter une page</span></a></nav></aside>`;
+const layout=(hero,tiles,side='')=>`<div class="layout">${rail()}<main><div class="grid">${hero}${tiles}</div></main>${side}</div>`;
+
+const chips=()=>`<div class="chips"><span style="background:var(--c4)">🗺️ 2/5 quêtes</span><span style="background:var(--c3)">🧳 Valise <b data-chip-bag></b></span><span style="background:var(--c2)">🧮 Reste <b data-chip-bud></b></span><span style="background:var(--c5)">🤝 1 relance</span></div>`;
+const ringBlock=(k,label)=>`<div class="rg"><div class="ring-wrap"><div class="ring" data-ring="${k}"></div><b data-${k}></b></div><span>${label}</span></div>`;
+
+/* ---------- Widgets ---------- */
+const W={
+progress:()=>`<article class="tile w-progress"><h3><span>⏳</span>Avancement</h3>
+ <div style="display:flex;align-items:center;gap:16px"><div class="ring-wrap"><div class="ring" data-ring="day"></div><b data-day></b></div><small>Journée
+écoulée</small></div>
+ <div class="row"><span>Semaine</span><b data-week></b></div><div class="bar"><i data-weekbar></i></div>
+ <p class="muted" style="font-size:12px;margin:12px 0 0">Calculé d'après la date et l'heure actuelles.</p></article>`,
+budget:()=>`<article class="tile w-budget"><h3><span>🧮</span>Calculateur de budget</h3>
+ <label>Revenus <input type="number" value="2400" data-b="in"></label>
+ <label>Dépenses fixes <input type="number" value="1150" data-b="fix"></label>
+ <label>Dépenses variables <input type="number" value="620" data-b="var"></label>
+ <div class="res"><span>Reste à vivre</span><b data-b="res"></b></div>
+ <div class="bar" style="margin-top:8px"><i data-b="bar"></i></div><small data-b="pct"></small></article>`,
+bag:()=>`<article class="tile w-bag"><h3><span>🧳</span>Ma valise</h3><ul class="checks">
+ ${[['Passeport / ID',1],['Chargeurs',1],['Trousse de toilette',1],['Adaptateur prise',0],['Vêtements (5 jours)',0],['Assurance voyage',0]]
+ .map(x=>`<li><label><input type="checkbox" ${x[1]?'checked':''}> ${x[0]}</label></li>`).join('')}</ul>
+ <div class="row"><span>Prêt</span><b data-bag></b></div><div class="bar"><i data-bagbar></i></div></article>`,
+quests:()=>`<article class="tile w-quests"><h3><span>🗺️</span>Voyage · Lisbonne <small style="margin-left:auto">2/5 quêtes</small></h3><ul class="quests">
+ <li class="done"><span class="q-ic">✔</span><div><b>Réserver les vols</b><small>+100 XP</small></div></li>
+ <li class="done"><span class="q-ic">✔</span><div><b>Réserver l'hébergement</b><small>+100 XP</small></div></li>
+ <li><span class="q-ic">3</span><div><b>Monter au Castelo São Jorge</b><small>+60 XP</small></div></li>
+ <li><span class="q-ic">4</span><div><b>Goûter un pastel de nata</b><small>+30 XP</small></div></li>
+ <li><span class="q-ic">5</span><div><b>Tram 28 au coucher du soleil</b><small>+80 XP</small></div></li></ul></article>`,
+people:()=>`<article class="tile w-people"><h3><span>🤝</span>Mon entourage</h3><ul class="people">
+ <li><span class="av">C</span><div><b>Camille</b><small>Proche · vu il y a 2 j</small></div>${dots(5)}</li>
+ <li><span class="av">T</span><div><b>Thomas</b><small>Ami · à relancer</small></div>${dots(3)}</li>
+ <li><span class="av">L</span><div><b>Léa</b><small>Collègue · vu hier</small></div>${dots(4)}</li>
+ <li><span class="av">M</span><div><b>Marc</b><small>Connaissance · il y a 3 mois</small></div>${dots(2)}</li></ul></article>`,
+finance:()=>`<article class="tile w-finance finance"><h3><span>📈</span>Finances</h3>
+ <div class="big">4 280,50 €</div><div class="up">▲ +3,2 % ce mois</div>
+ <div class="spark">${[35,42,38,55,48,62,70].map(h=>`<i style="height:${h}%"></i>`).join('')}</div>
+ <ul class="cats"><li><span>Logement</span><b>− 780 €</b></li><li><span>Alimentation</span><b>− 310 €</b></li><li><span>Loisirs</span><b>− 140 €</b></li></ul></article>`
+};
+const std=()=>W.progress()+W.budget()+W.bag()+W.quests()+W.people()+W.finance();
+
+/* ---------- Les 6 déclinaisons ---------- */
+const DESIGNS=[
+{name:'1 · Classique',
+ note:`<b>La référence.</b> Rail clair d'icônes, hero sombre avec pastilles de résumé, anneau de progression, tuiles pastel sur 3 colonnes. <b>Sert de point de comparaison</b> pour juger les autres déclinaisons.`,
+ html:()=>`<div class="bt r1">${layout(`<section class="hero"><div><span class="hd-date">${today}</span><h1>Bonjour 👋
+Ta journée, en un coup d'œil</h1></div>${chips()}</section>`,std())}</div>`},
+{name:'2 · Nuit',
+ note:`<b>Rail + hero en mode sombre.</b> Fond presque noir, rail discret, hero en dégradé pastel très lumineux, tuiles pastel qui se soulèvent au survol. Quêtes en grande tuile verticale. <b>Idéal si</b> tu veux un rendu premium, agréable le soir.`,
+ html:()=>`<div class="bt r2">${layout(`<section class="hero"><div><span class="hd-date">${today}</span><h1>Bonsoir 🌙
+Voici ton tableau de bord</h1></div>${chips()}</section>`,W.quests()+W.progress()+W.budget()+W.people()+W.bag()+W.finance())}</div>`},
+{name:'3 · Rail extensible',
+ note:`<b>Rail compact qui se déplie au survol</b> pour afficher les libellés (passe la souris sur la barre à gauche). Hero en dégradé pastel avec boutons d'ajout rapide. <b>Idéal si</b> tu veux plus de clarté dans la navigation sans perdre de place, utile quand le nombre de pages augmentera.`,
+ html:()=>`<div class="bt r3">${layout(`<section class="hero"><div><span class="hd-date">${today}</span><h1>Bonjour 👋</h1><div class="qa"><a>＋ Dépense</a><a>＋ Quête</a><a>＋ Contact</a><a>＋ Objet valise</a></div></div>${chips()}</section>`,W.progress()+W.budget()+W.bag()+W.quests()+W.people()+W.finance())}</div>`},
+{name:'4 · Hero anneaux',
+ note:`<b>L'avancement devient le hero.</b> Rail sombre en pilule pleine hauteur, grande tuile d'accueil avec deux anneaux (journée et semaine) et pastilles de résumé. Les 5 autres modules s'organisent en dessous. <b>Idéal si</b> tu veux que l'avancement du temps soit l'élément central de la page d'accueil.`,
+ html:()=>`<div class="bt r4">${layout(`<section class="hero hero4"><div><span class="lbl">⏳ Avancement · ${today}</span><h1>Où en es-tu
+aujourd'hui ?</h1>${chips()}</div><div class="rings">${ringBlock('day','Journée')}${ringBlock('week','Semaine')}</div></section>`,W.budget()+W.bag()+W.people()+W.quests()+W.finance())}</div>`},
+{name:'5 · Sticker îlot',
+ note:`<b>Version ludique.</b> Rail en pilule flottante qui reste visible au défilement, contours noirs épais, ombres dures, fond à pois, autocollant sur le hero. <b>Idéal si</b> tu veux une identité fun et très reconnaissable.`,
+ html:()=>`<div class="bt r5">${layout(`<section class="hero"><span class="stk">✦ Bonne journée !</span><div><span class="hd-date">${today}</span><h1>Hello 👋
+Life Board</h1></div>${chips()}</section>`,W.progress()+W.quests()+W.budget()+W.bag()+W.people()+W.finance())}</div>`},
+{name:"6 · Trois colonnes",
+ note:`<b>Rail + contenu + panneau « Aujourd'hui ».</b> Palette lavande, hero plus compact, et colonne de droite avec agenda du jour, tâches et relance (données d'exemple). <b>Idéal si</b> tu veux un vrai cockpit quotidien, avec une zone dédiée à l'immédiat.`,
+ html:()=>`<div class="bt r6">${layout(`<section class="hero"><div><span class="hd-date">${today}</span><h1>Bonjour 👋</h1></div>${chips()}</section>`,W.progress()+W.budget()+W.bag()+W.people()+W.quests()+W.finance(),
+ `<aside class="side"><div class="panel-side"><h3>📅 Aujourd'hui</h3><small>Exemples de données</small>
+ <ul class="tl"><li style="--c:var(--c4)"><time>08:30</time><span><b>Pointer les dépenses</b><small>Finances</small></span></li>
+ <li style="--c:var(--c5)"><time>12:30</time><span><b>Déjeuner avec Camille</b><small>Relations</small></span></li>
+ <li style="--c:var(--c3)"><time>18:00</time><span><b>Préparer la valise</b><small>Valise</small></span></li>
+ <li style="--c:var(--c1)"><time>20:00</time><span><b>Planifier le Tram 28</b><small>Voyage</small></span></li></ul>
+ <h3 style="margin-top:18px">✅ À faire</h3>
+ <ul class="todo"><li><label><input type="checkbox" checked> Réserver l'hébergement</label></li><li><label><input type="checkbox"> Acheter un adaptateur</label></li><li><label><input type="checkbox"> Mettre à jour le budget</label></li></ul>
+ <div class="nudge">🤝 <b>Thomas</b> est à relancer cette semaine</div></div></aside>`)}</div>`}
+];
+
+/* ---------- Construction de la page ---------- */
+const picker=document.getElementById('picker'),panels=document.getElementById('panels');
+DESIGNS.forEach((d,i)=>{
+ const b=document.createElement('button');b.textContent=d.name;b.setAttribute('role','tab');b.onclick=()=>show(i);picker.appendChild(b);
+ const s=document.createElement('section');s.className='panel';s.innerHTML=`<div class="note">${d.note}</div>`+d.html();panels.appendChild(s);
+});
+function show(i){
+ [...picker.children].forEach((b,k)=>b.setAttribute('aria-selected',k===i));
+ [...panels.children].forEach((p,k)=>p.classList.toggle('active',k===i));
+ history.replaceState(null,'','#'+(i+1));scrollTo(0,0);
+}
+
+/* ---------- Comportements ---------- */
+function updProgress(){
+ const n=new Date(),d=(n.getHours()*60+n.getMinutes())/1440,w=((n.getDay()+6)%7+d)/7;
+ document.querySelectorAll('[data-day]').forEach(e=>e.textContent=Math.round(d*100)+' %');
+ document.querySelectorAll('[data-week]').forEach(e=>e.textContent=Math.round(w*100)+' %');
+ document.querySelectorAll('[data-weekbar]').forEach(e=>e.style.width=w*100+'%');
+ document.querySelectorAll('[data-ring]').forEach(e=>e.style.setProperty('--p',(e.dataset.ring==='day'?d:w)*100));
+}
+function updBud(w){
+ const v=k=>+w.querySelector(`[data-b="${k}"]`).value||0,r=v('in')-v('fix')-v('var');
+ const txt=r.toLocaleString('fr-FR')+' €';
+ w.querySelector('[data-b="res"]').textContent=txt;
+ const p=v('in')?Math.max(0,Math.min(100,r/v('in')*100)):0;
+ w.querySelector('[data-b="bar"]').style.width=p+'%';
+ w.querySelector('[data-b="pct"]').textContent="Taux d'épargne potentiel : "+Math.round(p)+' %';
+ w.closest('.bt').querySelectorAll('[data-chip-bud]').forEach(e=>e.textContent=txt);
+}
+function updBag(w){
+ const c=[...w.querySelectorAll('input[type=checkbox]')],n=c.filter(x=>x.checked).length,p=n/c.length*100;
+ w.querySelector('[data-bag]').textContent=n+'/'+c.length;
+ w.querySelector('[data-bagbar]').style.width=p+'%';
+ w.closest('.bt').querySelectorAll('[data-chip-bag]').forEach(e=>e.textContent=Math.round(p)+' %');
+}
+document.addEventListener('input',e=>{const w=e.target.closest('.w-budget');if(w)updBud(w)});
+document.addEventListener('change',e=>{const w=e.target.closest('.w-bag');if(w)updBag(w)});
+document.addEventListener('click',e=>{
+ const a=e.target.closest('.rail a');if(!a)return;
+ e.preventDefault();
+ if(!a.classList.contains('add')){[...a.parentElement.children].forEach(x=>x.classList.toggle('on',x===a))}
+});
+document.querySelectorAll('.w-budget').forEach(updBud);
+document.querySelectorAll('.w-bag').forEach(updBag);
+updProgress();setInterval(updProgress,60000);
+show(Math.max(0,Math.min(DESIGNS.length-1,(parseInt(location.hash.slice(1))||1)-1)));
+</script>
+</body>
+</html>
